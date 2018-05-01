@@ -114,6 +114,13 @@ class Location(Address):
     '''
     Defines a physical location.
     '''
+    name = models.CharField(
+        max_length=100,
+        verbose_name=_("Name"),
+        help_text=_("A unique name for the location."),
+        null=False,
+        unique=True
+    )
     latitude = models.DecimalField(
         max_digits=9,
         decimal_places=6,
@@ -135,6 +142,13 @@ class Location(Address):
         null=True,
         on_delete=models.CASCADE
     )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Location')
+        verbose_name_plural = _('Locations')
 
 
 class LocationField(Field):
@@ -172,6 +186,10 @@ class LocationIdentifier(models.Model):
                     "SGLN, etc."),
         null=False
     )
+
+    class Meta:
+        verbose_name = _('LocationIdentifier')
+        verbose_name_plural = _('LocationIdentifiers')
 
 
 class LocationType(GenericType):

@@ -22,9 +22,11 @@ INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sites",
+    "django.contrib.staticfiles",
     "quartet_capture",
     "quartet_epcis",
     "quartet_masterdata",
+    "rest_framework",
 ]
 
 SITE_ID = 1
@@ -33,3 +35,10 @@ if django.VERSION >= (1, 10):
     MIDDLEWARE = ()
 else:
     MIDDLEWARE_CLASSES = ()
+
+STATIC_URL = '/static/'
+
+try:
+    import local_test_settings
+except:
+    pass

@@ -13,3 +13,33 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Copyright 2018 SerialLab Corp.  All rights reserved.
+
+from rest_framework.response import Response
+from rest_framework import views, status
+from quartet_masterdata import models, serializers
+
+
+class LocationByIdentifierView(views.APIView):
+    '''
+    Returns a Location detail record based on the inbound identifier.
+    '''
+
+    def get(self, request, format=None, identifier=None):
+        try:
+            location = models.Location.objects.select_related(
+                'location_type',
+            ).prefetch_related(
+                'locationfield_set',
+                'locationidentifier_set'
+            ).get(
+                locationidentifier__identifier=identifier
+            )
+            serializer = serializers.LocationSerializer(location)
+            return Response(serializer.data)
+        except models.Location.DoesNotExist:
+            response = Response(
+                'The location with identifier %s could not '
+                'be found.' % identifier,
+                status=status.HTTP_404_NOT_FOUND
+            )
+        return response

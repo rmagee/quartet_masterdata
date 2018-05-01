@@ -9,6 +9,7 @@ recommonmark
 django-model-utils>=2.0
 django
 djangorestframework
+factory_boy
 eparsecis
 epcpyyes
 -e git+git@gitlab.com:serial-lab/quartet_capture.git#egg=quartet_capture

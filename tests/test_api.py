@@ -1,0 +1,41 @@
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Copyright 2018 SerialLab Corp.  All rights reserved.
+from rest_framework.test import APITestCase
+from django.urls import reverse
+
+
+class APITests(APITestCase):
+    def setUp(self):
+        from tests import factories
+        location_type = factories.LocationTypeFactory.create()
+        location = factories.LocationFactory.create()
+        location2 = factories.LocationFactory.create(name='test',
+                                                     latitude=12.232,
+                                                     longitude=33.2343)
+        location_field = factories.LocationFieldFactory.create()
+        location_identifier = factories.LocationIdentifierFactory.create(
+            identifier='urn:epc:id:sgln:305555.123456.0',
+            identifier_type='SGLN',
+            location=location
+        )
+
+    def test_location_by_id(self):
+        url = reverse('location-by-identifier',
+                      kwargs={'identifier': 'urn:epc:id:sgln:305555.123456.0'}
+                      )
+        result = self.client.get(url,format='json')
+        self.assertEqual(result.status_code, 200)
+        print(result.data)
+

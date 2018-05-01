@@ -41,8 +41,6 @@ class LocationIdentifierSerializer(ModelSerializer):
     '''
     Default serializer for the LocationIdentifier model.
     '''
-    location = LocationSerializer(many=False, read_only=True)
-
     class Meta:
         model = models.LocationIdentifier
         fields = '__all__'
@@ -50,11 +48,11 @@ class LocationIdentifierSerializer(ModelSerializer):
 
 class LocationSerializer(ModelSerializer):
     '''
-    Default serializer for the
+    Default serializer for the Location Model
     '''
-    type = LocationTypeSerializer(many=False, read_only=False)
-    identifiers = LocationIdentifierSerializer(many=True, read_only=False)
-    fields = LocationFieldSerializer(many=True, read_only=False)
+    location_type = LocationTypeSerializer(many=False, read_only=True)
+    locationidentifier_set = LocationIdentifierSerializer(many=True, read_only=True)
+    locationfield_set = LocationFieldSerializer(many=True, read_only=True)
 
     class Meta:
         model = models.Location

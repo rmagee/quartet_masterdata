@@ -18,15 +18,17 @@ from django.conf.urls import url
 from django.views.generic import TemplateView
 
 from . import views
+from quartet_masterdata.routers import router
 
 urlpatterns = [
-    # url(
-    #     regex="^Location/~create/$",
-    #     view=views.LocationCreateView.as_view(),
-    #     name='Location_create',
-    # ),
+    url(
+        regex="^location-by-identifier/(?P<identifier>[[\w\s\W]{1,150})/$",
+        view=views.LocationByIdentifierView.as_view(),
+        name='location-by-identifier',
+    ),
     # url(
     #     regex="^Location/(?P<pk>\d+)/~delete/$",
     #     view=views.LocationDeleteView.as_view(),
     #     name='Location_delete',
 	]
+urlpatterns += router.urls
