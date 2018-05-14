@@ -16,6 +16,21 @@ Documentation
 
 The full documentation is at https://serial-lab.gitlab.io/quartet_masterdata/
 
+OpenFDA API Key
+---------------
+You will need an OpenFDA API Key to import master material data on-demand.
+In addition, in your `qu4rtet` `.env` file, you will need to enter the following
+configuration value as below.
+
+To get a free OpenFDA key go here:
+
+    https://open.fda.gov/api/reference/
+
+.. code-block:: text
+
+    ### ONLY AN EXAMPLE ###
+    OPEN_FDA_API_KEY=is:jKdYth4jNRTWTu9LzHmc1ftrpuVomkpsz6hdefiD #only an EXAMPLE
+
 Quickstart
 ----------
 

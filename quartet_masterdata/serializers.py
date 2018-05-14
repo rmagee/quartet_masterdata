@@ -50,7 +50,7 @@ class LocationSerializer(ModelSerializer):
     '''
     Default serializer for the Location Model
     '''
-    location_type = LocationTypeSerializer(many=False, read_only=True)
+    #location_type = LocationTypeSerializer(many=False, read_only=True)
     locationidentifier_set = LocationIdentifierSerializer(many=True, read_only=True)
     locationfield_set = LocationFieldSerializer(many=True, read_only=True)
 
