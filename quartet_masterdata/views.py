@@ -32,7 +32,7 @@ class LocationByIdentifierView(views.APIView):
                 'locationfield_set',
                 'locationidentifier_set'
             ).get(
-                locationidentifier__identifier=identifier
+                SGLN=identifier
             )
             serializer = serializers.LocationSerializer(location)
             return Response(serializer.data)

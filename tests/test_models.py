@@ -19,8 +19,11 @@ class TestQuartet_Masterdata(TestCase):
         from tests import factories
         location_type = factories.LocationTypeFactory.create()
         location = factories.LocationFactory.create()
-        location2 = factories.LocationFactory.create(name='test', latitude=12.232,
-                                                     longitude=33.2343)
+        location2 = factories.LocationFactory.create(
+            GLN13="2345234523454",
+            SGLN="urn:epc:id:sgln:23452.3452345.0",
+            name='test', latitude=12.232,
+            longitude=33.2343)
         location_field = factories.LocationFieldFactory.create()
         location_identifier = factories.LocationIdentifierFactory.create()
 
@@ -30,7 +33,7 @@ class TestQuartet_Masterdata(TestCase):
         ).prefetch_related(
             'locationfield_set',
             'locationidentifier_set'
-        ).get(locationidentifier__identifier='urn:epc:id:sgln:305555.123456.0')
+        ).get(SGLN='urn:epc:id:sgln:305555.123456.0')
 
     def tearDown(self):
         pass

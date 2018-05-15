@@ -21,13 +21,18 @@ class APITests(APITestCase):
         from tests import factories
         location_type = factories.LocationTypeFactory.create()
         location = factories.LocationFactory.create()
-        location2 = factories.LocationFactory.create(name='test',
-                                                     latitude=12.232,
-                                                     longitude=33.2343)
+        location2 = factories.LocationFactory.create(
+            name='test',
+            latitude=12.232,
+            longitude=33.2343,
+            GLN13="2345234523454",
+            SGLN="urn:epc:id:sgln:23452.3452345.0",
+        )
         location_field = factories.LocationFieldFactory.create()
         location_identifier = factories.LocationIdentifierFactory.create(
-            identifier='urn:epc:id:sgln:305555.123456.0',
+            identifier='urn:epc:id:sgln:305555.123456.2',
             identifier_type='SGLN',
+            description='Second Base',
             location=location
         )
 
@@ -35,7 +40,6 @@ class APITests(APITestCase):
         url = reverse('location-by-identifier',
                       kwargs={'identifier': 'urn:epc:id:sgln:305555.123456.0'}
                       )
-        result = self.client.get(url,format='json')
+        result = self.client.get(url, format='json')
         self.assertEqual(result.status_code, 200)
         print(result.data)
-

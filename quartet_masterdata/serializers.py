@@ -41,6 +41,7 @@ class LocationIdentifierSerializer(ModelSerializer):
     '''
     Default serializer for the LocationIdentifier model.
     '''
+
     class Meta:
         model = models.LocationIdentifier
         fields = '__all__'
@@ -50,10 +51,62 @@ class LocationSerializer(ModelSerializer):
     '''
     Default serializer for the Location Model
     '''
-    #location_type = LocationTypeSerializer(many=False, read_only=True)
-    locationidentifier_set = LocationIdentifierSerializer(many=True, read_only=True)
+    locationidentifier_set = LocationIdentifierSerializer(many=True,
+                                                          read_only=True)
     locationfield_set = LocationFieldSerializer(many=True, read_only=True)
 
     class Meta:
         model = models.Location
+        fields = '__all__'
+
+
+class TradeItemFieldSerializer(ModelSerializer):
+    '''
+    Default serializer for the TradeItemField model.
+    '''
+
+    class Meta:
+        model = models.TradeItemField
+        fields = '__all__'
+
+
+class MeasurementSerializer(ModelSerializer):
+    '''
+    Default serializer for the Measurement model.
+    '''
+
+    class Meta:
+        model = models.Measurement
+        fields = '__all__'
+
+
+class PartyFieldSerializer(ModelSerializer):
+    '''
+    Default serializer for the PartyField model.
+    '''
+
+    class Meta:
+        model = models.PartyField
+        fields = '__all__'
+
+
+class PartySerializer(ModelSerializer):
+    '''
+    Default serializer for the Party model.
+    '''
+    partyfield_set = PartyFieldSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = models.Party
+        fields = '__all__'
+
+
+class TradeItemSerializer(ModelSerializer):
+    '''
+    Default serializer for the TradeItem model.
+    '''
+    tradeitemfield_set = TradeItemFieldSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = models.TradeItem
         fields = '__all__'

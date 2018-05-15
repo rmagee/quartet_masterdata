@@ -37,3 +37,24 @@ router.register(
     viewsets.LocationIdentifierViewSet,
     base_name='location-identifiers'
 )
+router.register(
+    r'trade-items',
+    viewsets.TradeItemViewSet,
+    base_name='trade-items'
+)
+router.register(
+    r'trade-item-fields',
+    viewsets.TradeItemFieldViewSet,
+    base_name='trade-item-fields'
+)
+router.register(
+    r'parties',
+    viewsets.PartyViewSet,
+    base_name='parties'
+)
+router.register(
+    r'party-fields',
+    viewsets.PartyFieldViewSet,
+    base_name='party-fields'
+)
+

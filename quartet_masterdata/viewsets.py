@@ -48,3 +48,43 @@ class LocationFieldViewSet(ModelViewSet):
     '''
     queryset = models.LocationField.objects.all()
     serializer_class = serializers.LocationFieldSerializer
+
+
+class MeasurementViewSet(ModelViewSet):
+    '''
+    CRUD ready model view for the Measurement model.
+    '''
+    queryset = models.Measurement.objects.all()
+    serializer_class = serializers.MeasurementSerializer
+
+
+class PartyViewSet(ModelViewSet):
+    '''
+    CRUD ready model view for the Party model.
+    '''
+    queryset = models.Party.objects.all()
+    serializer_class = serializers.PartySerializer
+
+
+class PartyFieldViewSet(ModelViewSet):
+    '''
+    CRUD ready model view for the PartyField model.
+    '''
+    queryset = models.PartyField.objects.all()
+    serializer_class = serializers.PartyFieldSerializer
+
+
+class TradeItemViewSet(ModelViewSet):
+    '''
+    CRUD ready model view for the TradeItem model.
+    '''
+    queryset = models.TradeItem.objects.all()
+    serializer_class = serializers.TradeItemSerializer
+
+
+class TradeItemFieldViewSet(ModelViewSet):
+    '''
+    CRUD ready model view for the TradeItemField model.
+    '''
+    queryset = models.TradeItemField.objects.all()
+    serializer_class = serializers.TradeItemFieldSerializer

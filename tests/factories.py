@@ -28,6 +28,8 @@ class LocationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Location
 
+    GLN13 = '3055551234561'
+    SGLN = 'urn:epc:id:sgln:305555.123456.0'
     name = "Headquarters"
     address1 = 'One Citizens Bank Way'
     country = 'US'
@@ -53,6 +55,49 @@ class LocationIdentifierFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.LocationIdentifier
 
-    identifier = 'urn:epc:id:sgln:305555.123456.0'
+    identifier = 'urn:epc:id:sgln:305555.123456.1'
     identifier_type = 'SGLN'
+    description = 'First Base'
     location = factory.Iterator(models.Location.objects.all())
+
+
+class MeasurementFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.Measurement
+
+    measurement = 100
+    measurement_unit_code = 'MGM'
+
+
+class TradeItemFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.TradeItem
+
+    country_of_origin = 'US'
+    drained_weight = factory.Iterator(models.Measurement.objects.all())
+    gross_weight = factory.Iterator(models.Measurement.objects.all())
+    net_weight = factory.Iterator(models.Measurement.objects.all())
+    GTIN14 = '12341234123411'
+    NDC = '1234-1234-12'
+    NDC_pattern = '4-4-2'
+    additional_id = '45039-33'
+    additional_id_typecode = 'GST'
+    description_short = 'Supressitol'
+    dosage_form_type = 'PILL'
+    functional_name = 'Widget'
+    manufacturer_name = 'Acme Corp.'
+    net_content_description = '600 grams'
+    label_description = 'Supressitol Tablets: 10 grams of suppression.'
+    regulated_product_name = 'Supressitoxide Carbonite'
+    strength_description = '100mg'
+    trade_item_description = 'Supressitol Brand Suppression Tablets'
+
+
+class TradeItemFieldFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.TradeItemField
+
+    trade_item = factory.Iterator(models.TradeItem.objects.all())
+    name = 'MATNO'
+    value = '32423-33-333'
+    description = 'SAP Internal Material Number'

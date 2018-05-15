@@ -2,6 +2,8 @@
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 
 class Field(models.Model):
@@ -55,7 +57,7 @@ class GenericType(models.Model):
         abstract = True
 
 
-class GS1LocatonMixin:
+class GS1Location(models.Model):
     GLN13 = models.CharField(
         max_length=13,
         verbose_name=_("GLN13"),
@@ -63,6 +65,8 @@ class GS1LocatonMixin:
                     "means to identify legal entities, trading parties and "
                     "locations to support the requirements of electronic "
                     "commerce. The GLN-13 is defined by GS1"),
+        unique=True,
+        db_index=True,
         null=True
     )
     SGLN = models.CharField(
@@ -73,8 +77,13 @@ class GS1LocatonMixin:
                     "specific building or "
                     "a specific unit of shelving within a warehouse.  The"
                     "SGLN is expressed as a URN value."),
-        null=True
+        null=True,
+        unique=True,
+        db_index=True
     )
+
+    class Meta:
+        abstract = True
 
 
 class Address(models.Model):
@@ -171,7 +180,7 @@ class Address(models.Model):
         abstract = True
 
 
-class Party(Address, GS1LocatonMixin):
+class Party(Address, GS1Location):
     '''
     A party is linked to a source or destination in a relevant EPCIS message.
     For example owning_party, possessing_party, etc.  This is outlined
@@ -183,7 +192,18 @@ class Party(Address, GS1LocatonMixin):
         verbose_name_plural = _('Parties')
 
 
-class Location(Address, GS1LocatonMixin):
+class PartyField(Field):
+    '''
+    The PartyField allows for the extension and enhancement of business
+    data relative to a Party model via name/value fields.
+    '''
+
+    class Meta:
+        verbose_name = _('Party Field')
+        verbose_name_plural = _('Party Fields')
+
+
+class Location(Address, GS1Location):
     '''
     Defines a physical location, site or sub-site per
     section 10 of the GS1 CBV 1.2
@@ -207,7 +227,7 @@ class Location(Address, GS1LocatonMixin):
         null=True
     )
     ssa = models.CharField(
-        length=1000,
+        max_length=1000,
         verbose_name=_("Sub-Site Attribute"),
         help_text=_("Sub-Site Attribute: further qualifies the business "
                     "function of the sub-site location. This master data "
@@ -249,9 +269,8 @@ class LocationField(Field):
 
 class LocationIdentifier(models.Model):
     '''
-    A location may have one or more unique identifiers.  This allows for
-    a location to have one GLN-13 and one SGLN and yet another internal
-    identifier.
+    A location may have one or more unique identifiers aside from those
+    defined on the location model (SGLN, GLN13, etc.)
     '''
     location = models.ForeignKey(
         Location,
@@ -270,6 +289,12 @@ class LocationIdentifier(models.Model):
         help_text=_("The type of location identifier. For example: GLN-13, "
                     "SGLN, etc."),
         null=False
+    )
+    description = models.CharField(
+        max_length=150,
+        verbose_name=_("Description"),
+        help_text=_("A brief description of what the identifier represents."),
+        null=True
     )
 
     class Meta:
@@ -324,6 +349,7 @@ class ItemInstance(models.Model):
     )
     drained_weight = models.ForeignKey(
         Measurement,
+        related_name='drained_weight',
         verbose_name=_('Drained Weight'),
         help_text=_('The weight of the trade item when drained of its '
                     'liquid. For example 225 "grm'),
@@ -332,6 +358,7 @@ class ItemInstance(models.Model):
     )
     gross_weight = models.ForeignKey(
         Measurement,
+        related_name='gross_weight',
         verbose_name=_('Gross Weight'),
         help_text=_('Used to identify the gross weight of the trade item. '
                     'The gross weight includes all packaging materials '
@@ -350,11 +377,41 @@ class ItemInstance(models.Model):
         abstract = True
 
 
+# available digit patterns for NDCs
+NDC_CHOICES = (
+    ('4-4-2', '4-4-2'),
+    ('5-3-2', '5-3-2'),
+    ('4-5-1', '5-4-1'),
+)
+
+
 class TradeItem(ItemInstance):
     '''
     Based on the GS1 CBV 1.2 Trade Item Master Data Attributes in section
     9 of the standard.
     '''
+    GTIN14 = models.CharField(
+        max_length=14,
+        verbose_name=_("GTIN-14"),
+        help_text=_("The GS1 GTIN-14 associated with the Trade Item."),
+        null=False,
+        unique=True,
+        db_index=True
+    )
+    NDC = models.CharField(
+        max_length=10,
+        verbose_name=_("NDC"),
+        help_text=_("The national drug code for the product. US Only."),
+        null=True,
+        unique=True
+    )
+    NDC_pattern = models.CharField(
+        max_length=5,
+        verbose_name=_("NDC_pattern"),
+        help_text=_("The pattern of the NDC.  US Only.  Optional."),
+        null=True,
+        choices=NDC_CHOICES
+    )
     additional_id = models.CharField(
         max_length=80,
         verbose_name=_("Additional ID"),
@@ -441,25 +498,14 @@ class TradeItem(ItemInstance):
     )
 
     class Meta:
-        abstract = True
-
-
-class TradeItemInstance(ItemInstance):
-    '''
-    From section 9.2.3 of the CBV 1.2 spec.
-    '''
-    lot_number = models.CharField(
-        max_length=20,
-        verbose_name=_("Lot Number"),
-        help_text=_("The Lot Number"),
-        null=True
-    )
+        verbose_name = _('Trade Item')
+        verbose_name_plural = _('Trade Items')
 
 
 class TradeItemField(Field):
     '''
     The trade item field allows for further classification and description
-    of trade items by attaching any number of name-value pair fields to 
+    of trade items by attaching any number of name-value pair fields to
     a given trade item.
     '''
     trade_item = models.ForeignKey(
@@ -469,8 +515,7 @@ class TradeItemField(Field):
         help_text=_("The Related Trade Item"),
         null=False
     )
+
     class Meta:
         verbose_name = _('Trade Item Field')
         verbose_name_plural = _('Trade Item Fields')
-            
-
