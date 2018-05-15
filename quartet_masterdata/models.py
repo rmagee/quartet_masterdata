@@ -55,25 +55,64 @@ class GenericType(models.Model):
         abstract = True
 
 
+class GS1LocatonMixin:
+    GLN13 = models.CharField(
+        max_length=13,
+        verbose_name=_("GLN13"),
+        help_text=_("The GLN (Global Location Number) provides a standard "
+                    "means to identify legal entities, trading parties and "
+                    "locations to support the requirements of electronic "
+                    "commerce. The GLN-13 is defined by GS1"),
+        null=True
+    )
+    SGLN = models.CharField(
+        max_length=150,
+        verbose_name=_("SGLN"),
+        help_text=_("The SGLN EPC scheme is used to assign a unique identity "
+                    "to a physical location or sub-location, such as a "
+                    "specific building or "
+                    "a specific unit of shelving within a warehouse.  The"
+                    "SGLN is expressed as a URN value."),
+        null=True
+    )
+
+
 class Address(models.Model):
     '''
     Defines a mailing address for a location.
     '''
+    name = models.CharField(
+        max_length=128,
+        verbose_name=_("Name"),
+        help_text=_("A unique name for the location or party."),
+        db_index=True,
+        null=False,
+        unique=True
+    )
     address1 = models.CharField(
-        max_length=400,
-        verbose_name=_("address1"),
-        help_text=_("Street Address"),
+        max_length=1000,
+        verbose_name=_("Street Address One"),
+        help_text=_("For example, the name of the street and the number "
+                    "in the street or the name of a building"),
         null=True
     )
     address2 = models.CharField(
-        max_length=400,
-        verbose_name=_("address2"),
-        help_text=_("Street Address 2"),
+        max_length=1000,
+        verbose_name=_("Street Address Two"),
+        help_text=_("The second free form line complements the first "
+                    "free form line to locate the party or location."),
+        null=True
+    )
+    address3 = models.CharField(
+        max_length=1000,
+        verbose_name=_("Street Address Three"),
+        help_text=_("The third free form line complements the first and "
+                    "second free form lines where necessary."),
         null=True
     )
     country = models.CharField(
         max_length=2,
-        verbose_name=_("Country"),
+        verbose_name=_("Country Code"),
         help_text=_("Country ISO 3166-1 alpha-2 Code"),
         null=True
     )
@@ -86,13 +125,32 @@ class Address(models.Model):
     state_province = models.CharField(
         max_length=10,
         verbose_name=_("State or Province"),
-        help_text=_("State or Province"),
+        help_text=_("One of the constituent units of a nation "
+                    "having a federal government."),
         null=True
     )
     postal_code = models.CharField(
         max_length=20,
         verbose_name=_("Postal Code"),
         help_text=_("Postal Code"),
+        null=True
+    )
+    latitude = models.DecimalField(
+        max_digits=9,
+        decimal_places=6,
+        verbose_name=_("Latitude"),
+        help_text=_(" Latitude of the location, in degrees. Positive "
+                    "numbers are northern latitude; negative numbers "
+                    "are southern latitude."),
+        null=True
+    )
+    longitude = models.DecimalField(
+        max_digits=9,
+        decimal_places=6,
+        verbose_name=_("Longitude"),
+        help_text=_("Longitude of the location, in degrees. Positive "
+                    "numbers are eastern longitude; negative numbers "
+                    "are western longitude."),
         null=True
     )
 
@@ -106,40 +164,65 @@ class Address(models.Model):
             self.postal_code
         )
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         abstract = True
 
 
-class Location(Address):
+class Party(Address, GS1LocatonMixin):
     '''
-    Defines a physical location.
+    A party is linked to a source or destination in a relevant EPCIS message.
+    For example owning_party, possessing_party, etc.  This is outlined
+    in sections 7.4 and 10.2 respectively.
     '''
-    name = models.CharField(
-        max_length=100,
-        verbose_name=_("Name"),
-        help_text=_("A unique name for the location."),
-        db_index=True,
-        null=False,
-        unique=True
+
+    class Meta:
+        verbose_name = _('Party')
+        verbose_name_plural = _('Parties')
+
+
+class Location(Address, GS1LocatonMixin):
+    '''
+    Defines a physical location, site or sub-site per
+    section 10 of the GS1 CBV 1.2
+    '''
+    site = models.ForeignKey(
+        'self',
+        verbose_name=_("Site"),
+        help_text=_("Identifies the site in which this location is contained"
+                    "...if at all. "
+                    "For a Sub-site location, this is the identifier of "
+                    "the parent location."),
+        null=True,
+        on_delete=models.CASCADE
     )
-    latitude = models.DecimalField(
-        max_digits=9,
-        decimal_places=6,
-        verbose_name=_("Latitude"),
-        help_text=_("Latitude"),
+    sst = models.SmallIntegerField(
+        verbose_name=_("Sub-Site Type"),
+        help_text=_("Sub-Site Type: describes the primary business function "
+                    "of the sub-site location. This master data attribute is "
+                    "only applicable to a sub-site location.  This value is "
+                    "expressed as a single numerical code."),
         null=True
     )
-    longitude = models.DecimalField(
-        max_digits=9,
-        decimal_places=6,
-        verbose_name=_("Longitude"),
-        help_text=_("Longitude"),
+    ssa = models.CharField(
+        length=1000,
+        verbose_name=_("Sub-Site Attribute"),
+        help_text=_("Sub-Site Attribute: further qualifies the business "
+                    "function of the sub-site location. This master data "
+                    "attribute is only applicable to a sub-site location. "
+                    "Sub-site attributes are expressed as a comma- separated "
+                    "list of zero or more numerical codes"),
         null=True
     )
     location_type = models.ForeignKey(
         'quartet_masterdata.LocationType',
         help_text=_("Location Type"),
-        verbose_name=_("The type of location."),
+        verbose_name=_("An additional classifier that can be used to identify"
+                       "the location outside of the CBV codes.  This "
+                       "can be an internal classifier or a human readable "
+                       "that lends further clarity to the location record."),
         null=True,
         on_delete=models.CASCADE
     )
@@ -154,7 +237,8 @@ class Location(Address):
 
 class LocationField(Field):
     '''
-    Assignable name-value fields can be added to locations.
+    Assignable name-value fields can be added to locations for further clarity
+    on their physical or logical attributes.
     '''
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
 
@@ -166,8 +250,8 @@ class LocationField(Field):
 class LocationIdentifier(models.Model):
     '''
     A location may have one or more unique identifiers.  This allows for
-    a location to have one GLN-13 for example and another internal identifier
-    should that be the case.
+    a location to have one GLN-13 and one SGLN and yet another internal
+    identifier.
     '''
     location = models.ForeignKey(
         Location,
@@ -261,6 +345,7 @@ class ItemInstance(models.Model):
         null=True,
         on_delete=models.CASCADE
     )
+
     class Meta:
         abstract = True
 
@@ -354,8 +439,10 @@ class TradeItem(ItemInstance):
                     "item using brand and other descriptors."),
         null=True
     )
+
     class Meta:
         abstract = True
+
 
 class TradeItemInstance(ItemInstance):
     '''
@@ -368,33 +455,22 @@ class TradeItemInstance(ItemInstance):
         null=True
     )
 
-class Material(models.Model):
-    pass
 
+class TradeItemField(Field):
+    '''
+    The trade item field allows for further classification and description
+    of trade items by attaching any number of name-value pair fields to 
+    a given trade item.
+    '''
+    trade_item = models.ForeignKey(
+        TradeItem,
+        on_delete=models.CASCADE,
+        verbose_name=_("Trade Item"),
+        help_text=_("The Related Trade Item"),
+        null=False
+    )
+    class Meta:
+        verbose_name = _('Trade Item Field')
+        verbose_name_plural = _('Trade Item Fields')
+            
 
-class MaterialUOM(models.Model):
-    pass
-
-
-class MaterialField(models.Model):
-    pass
-
-
-class MaterialIdentifier(models.Model):
-    pass
-
-
-class Entity(models.Model):
-    pass
-
-
-class EntityType(models.Model):
-    pass
-
-
-class EntityIdentifier(models.Model):
-    pass
-
-
-class EntityField(models.Model):
-    pass

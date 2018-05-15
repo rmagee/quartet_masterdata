@@ -9,27 +9,16 @@ quartet_masterdata
 .. image:: https://badge.fury.io/py/quartet_masterdata.svg
     :target: https://badge.fury.io/py/quartet_masterdata
 
-Models and APIs to support material, lot and location master data.
+GS1 CBV 1.2 Implementation for Trade Items and Location Master Data
+-------------------------------------------------------------------
+
+Models and APIs to support material, lot and location master data within
+QU4RTET as defined in the *GS1 Core Business Vocabulary*.
 
 Documentation
 -------------
 
 The full documentation is at https://serial-lab.gitlab.io/quartet_masterdata/
-
-OpenFDA API Key
----------------
-You will need an OpenFDA API Key to import master material data on-demand.
-In addition, in your `qu4rtet` `.env` file, you will need to enter the following
-configuration value as below.
-
-To get a free OpenFDA key go here:
-
-    https://open.fda.gov/api/reference/
-
-.. code-block:: text
-
-    ### ONLY AN EXAMPLE ###
-    OPEN_FDA_API_KEY=is:jKdYth4jNRTWTu9LzHmc1ftrpuVomkpsz6hdefiD #only an EXAMPLE
 
 Quickstart
 ----------
