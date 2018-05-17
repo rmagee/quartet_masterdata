@@ -63,3 +63,4 @@ class EntryGeoHistoryView(views.APIView):
         # now get the GPS info for each biz_location
         ret = {}
         for location in biz_locations:
+            pass
