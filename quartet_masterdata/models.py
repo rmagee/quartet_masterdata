@@ -5,6 +5,13 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
+# available digit patterns for NDCs
+NDC_CHOICES = (
+    ('4-4-2', '4-4-2'),
+    ('5-3-2', '5-3-2'),
+    ('4-5-1', '5-4-1'),
+)
+
 
 class Field(models.Model):
     '''
@@ -180,34 +187,17 @@ class Address(models.Model):
         abstract = True
 
 
-class Party(Address, GS1Location):
-    '''
-    A party is linked to a source or destination in a relevant EPCIS message.
-    For example owning_party, possessing_party, etc.  This is outlined
-    in sections 7.4 and 10.2 respectively.
-    '''
-
-    class Meta:
-        verbose_name = _('Party')
-        verbose_name_plural = _('Parties')
-
-
-class PartyField(Field):
-    '''
-    The PartyField allows for the extension and enhancement of business
-    data relative to a Party model via name/value fields.
-    '''
-
-    class Meta:
-        verbose_name = _('Party Field')
-        verbose_name_plural = _('Party Fields')
-
-
 class Location(Address, GS1Location):
     '''
-    Defines a physical location, site or sub-site per
-    section 10 of the GS1 CBV 1.2
+    This model handles a physical location, site or sub-site or party per
+    the data and fields outlined in section 10 of the GS1 CBV 1.2
     '''
+    icon = models.FileField(
+        upload_to='qu4rtetmasterdataimages/',
+        verbose_name=_('Icon'),
+        help_text=_('An icon to represent the location in a GUI or report.'),
+        null=True
+    )
     site = models.ForeignKey(
         'self',
         verbose_name=_("Site"),
@@ -347,42 +337,50 @@ class ItemInstance(models.Model):
                     "of 2-letter country codes"),
         null=True
     )
-    drained_weight = models.ForeignKey(
-        Measurement,
-        related_name='drained_weight',
+    drained_weight = models.FloatField(
         verbose_name=_('Drained Weight'),
         help_text=_('The weight of the trade item when drained of its '
-                    'liquid. For example 225 "grm'),
+                    'liquid. For example 225 grm'),
         null=True,
-        on_delete=models.CASCADE
     )
-    gross_weight = models.ForeignKey(
-        Measurement,
-        related_name='gross_weight',
+    drained_weight_uom = models.CharField(
+        max_length=5,
+        verbose_name=_("Drained Weight UOM"),
+        help_text=_("The unit of measure for the drained weight as defined in"
+                    "UN/ECE Recommendation 20."),
+        null=True
+    )
+    gross_weight = models.FloatField(
         verbose_name=_('Gross Weight'),
         help_text=_('Used to identify the gross weight of the trade item. '
                     'The gross weight includes all packaging materials '
                     'of the trade item.'),
         null=True,
-        on_delete=models.CASCADE
     )
-    net_weight = models.ForeignKey(
-        Measurement,
+    gross_weight_uom = models.CharField(
+        max_length=5,
+        verbose_name=_("Gross Weight UOM"),
+        help_text=_("The unit of measure for the gross weight as defined in"
+                    "UN/ECE Recommendation 20."),
+        null=True
+    )
+    net_weight = models.FloatField(
         verbose_name=_('Net Weight'),
-        null=True,
-        on_delete=models.CASCADE
+        help_text=_('Used to identify the net weight of the trade item. '
+                    'Net weight excludes any packaging materials and applies '
+                    'to all levels but consumer unit level.'),
+        null=True
+    )
+    net_weight_uom = models.CharField(
+        max_length=5,
+        verbose_name=_("NET Weight UOM"),
+        help_text=_("The unit of measure for the net weight as defined in"
+                    "UN/ECE Recommendation 20."),
+        null=True
     )
 
     class Meta:
         abstract = True
-
-
-# available digit patterns for NDCs
-NDC_CHOICES = (
-    ('4-4-2', '4-4-2'),
-    ('5-3-2', '5-3-2'),
-    ('4-5-1', '5-4-1'),
-)
 
 
 class TradeItem(ItemInstance):
@@ -390,6 +388,12 @@ class TradeItem(ItemInstance):
     Based on the GS1 CBV 1.2 Trade Item Master Data Attributes in section
     9 of the standard.
     '''
+    image = models.FileField(
+        upload_to='qu4rtetmasterdataimages/',
+        verbose_name=_('Icon'),
+        help_text=_('An image to represent the product in a GUI or report.'),
+        null=True
+    )
     GTIN14 = models.CharField(
         max_length=14,
         verbose_name=_("GTIN-14"),

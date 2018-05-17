@@ -17,6 +17,8 @@
 from rest_framework.response import Response
 from rest_framework import views, status
 from quartet_masterdata import models, serializers
+from quartet_epcis.db_api.queries import EPCISDBProxy
+from quartet_epcis.models.entries import EntryEvent
 
 
 class LocationByIdentifierView(views.APIView):
@@ -43,3 +45,21 @@ class LocationByIdentifierView(views.APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
         return response
+
+
+class EntryGeoHistoryView(views.APIView):
+    '''
+    Returns a list of events and lat/long co-ordinates associated
+    with any GLNs in the events.
+    '''
+
+    def get(self, request, format=None, epc=None, epc_pk=None):
+        # get all the events and biz_locations ordered by date
+        biz_locations = EntryEvent.objects.order_by(
+            'event__event_time'
+        ).select_related(
+            'event'
+        ).filter(identifier='test').only('event__event_time', 'event__biz_location')
+        # now get the GPS info for each biz_location
+        ret = {}
+        for location in biz_locations:

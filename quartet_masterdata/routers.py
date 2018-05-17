@@ -47,14 +47,5 @@ router.register(
     viewsets.TradeItemFieldViewSet,
     base_name='trade-item-fields'
 )
-router.register(
-    r'parties',
-    viewsets.PartyViewSet,
-    base_name='parties'
-)
-router.register(
-    r'party-fields',
-    viewsets.PartyFieldViewSet,
-    base_name='party-fields'
-)
+
 

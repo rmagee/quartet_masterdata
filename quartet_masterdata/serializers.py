@@ -80,27 +80,6 @@ class MeasurementSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class PartyFieldSerializer(ModelSerializer):
-    '''
-    Default serializer for the PartyField model.
-    '''
-
-    class Meta:
-        model = models.PartyField
-        fields = '__all__'
-
-
-class PartySerializer(ModelSerializer):
-    '''
-    Default serializer for the Party model.
-    '''
-    partyfield_set = PartyFieldSerializer(read_only=True, many=True)
-
-    class Meta:
-        model = models.Party
-        fields = '__all__'
-
-
 class TradeItemSerializer(ModelSerializer):
     '''
     Default serializer for the TradeItem model.

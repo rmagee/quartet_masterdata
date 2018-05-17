@@ -43,3 +43,4 @@ class APITests(APITestCase):
         result = self.client.get(url, format='json')
         self.assertEqual(result.status_code, 200)
         print(result.data)
+

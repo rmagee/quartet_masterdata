@@ -61,22 +61,16 @@ class LocationIdentifierFactory(factory.django.DjangoModelFactory):
     location = factory.Iterator(models.Location.objects.all())
 
 
-class MeasurementFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = models.Measurement
-
-    measurement = 100
-    measurement_unit_code = 'MGM'
-
-
 class TradeItemFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.TradeItem
 
     country_of_origin = 'US'
-    drained_weight = factory.Iterator(models.Measurement.objects.all())
-    gross_weight = factory.Iterator(models.Measurement.objects.all())
-    net_weight = factory.Iterator(models.Measurement.objects.all())
+    drained_weight = None
+    gross_weight = 10.5
+    gross_weight_uom = 'LBR'
+    net_weight = 10
+    net_weight_uom = 'LBR'
     GTIN14 = '12341234123411'
     NDC = '1234-1234-12'
     NDC_pattern = '4-4-2'
@@ -101,3 +95,7 @@ class TradeItemFieldFactory(factory.django.DjangoModelFactory):
     name = 'MATNO'
     value = '32423-33-333'
     description = 'SAP Internal Material Number'
+
+
+
+
