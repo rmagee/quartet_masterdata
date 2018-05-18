@@ -17,8 +17,9 @@
 from rest_framework.response import Response
 from rest_framework import views, status
 from quartet_masterdata import models, serializers
-from quartet_epcis.db_api.queries import EPCISDBProxy
 from quartet_epcis.models.entries import EntryEvent
+from quartet_masterdata.geolocation import GeoEvent, GeoEventSerializer
+from typing import List
 
 
 class LocationByIdentifierView(views.APIView):
@@ -55,12 +56,26 @@ class EntryGeoHistoryView(views.APIView):
 
     def get(self, request, format=None, epc=None, epc_pk=None):
         # get all the events and biz_locations ordered by date
+        kwargs = {'identifier': epc} or {'id': epc_pk}
         biz_locations = EntryEvent.objects.order_by(
             'event__event_time'
         ).select_related(
             'event'
-        ).filter(identifier='test').only('event__event_time', 'event__biz_location')
+        ).filter(**kwargs).only('event__event_time',
+                                'event__biz_location')
         # now get the GPS info for each biz_location
-        ret = {}
+        ret = []
         for location in biz_locations:
-            pass
+            gl = GeoEvent(
+                event_time=location.event.event_time,
+                biz_location=location.event.biz_location
+            )
+            lat, long = models.Location.objects.values_list(
+                'latitude', 'longitude').get(
+                SGLN=location.event.biz_location
+            )
+            gl.latitude = lat
+            gl.longitude = long
+            serializer = GeoEventSerializer(gl)
+            ret.append(serializer.data)
+        return Response(ret)

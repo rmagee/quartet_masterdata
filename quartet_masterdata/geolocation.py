@@ -12,51 +12,37 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Copyright 2018 SerialLab Corp.  All rights reserved.
+import json
 from datetime import datetime
 from typing import List
+from rest_framework import serializers
+
 
 class GeoEvent:
     '''
     Used as a result structure for geo history queries
     '''
+
     def __init__(self, biz_location: str = None, event_time: datetime = None,
                  longitude: float = None, latitude: float = None):
-        self._biz_location = biz_location
-        self._event_time = event_time
-        self._longitude = longitude
-        self._latitude = latitude
+        self.biz_location = biz_location
+        self.event_time = event_time
+        self.longitude = longitude
+        self.latitude = latitude
 
-    @property
-    def biz_location(self):
-        return self._biz_location
+    def to_json(self):
+        return json.dumps(self)
 
-    @biz_location.setter
-    def biz_location(self, value):
-        self._biz_location = value
 
-    @property
-    def event_time(self):
-        return self._event_time
+class GeoEventSerializer(serializers.Serializer):
+    '''
+    Used to serialize GeoEvent during DRF calls to different formats.
+    '''
+    biz_location = serializers.CharField(max_length=150)
+    event_time = serializers.DateTimeField()
+    longitude = serializers.FloatField()
+    latitude = serializers.FloatField()
 
-    @event_time.setter
-    def event_time(self, value):
-        self._event_time = value
-
-    @property
-    def longitude(self):
-        return self._longitude
-
-    @longitude.setter
-    def longitude(self, value):
-        self._longitude = value
-
-    @property
-    def latitude(self):
-        return self._latitude
-
-    @latitude.setter
-    def latitude(self, value):
-        self._latitude = value
 
 # typed list for code hints, etc
 GeoEventList = List[GeoEvent]

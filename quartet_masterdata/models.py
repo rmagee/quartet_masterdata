@@ -103,7 +103,6 @@ class Address(models.Model):
         help_text=_("A unique name for the location or party."),
         db_index=True,
         null=False,
-        unique=True
     )
     address1 = models.CharField(
         max_length=1000,
@@ -192,6 +191,13 @@ class Location(Address, GS1Location):
     This model handles a physical location, site or sub-site or party per
     the data and fields outlined in section 10 of the GS1 CBV 1.2
     '''
+    company = models.ForeignKey(
+        'quartet_masterdata.Company',
+        null=True,
+        help_text=_('The company, if any, associated with this location.'),
+        verbose_name=_('Company'),
+        on_delete=models.CASCADE
+    )
     icon = models.FileField(
         upload_to='qu4rtetmasterdataimages/',
         verbose_name=_('Icon'),
@@ -388,6 +394,13 @@ class TradeItem(ItemInstance):
     Based on the GS1 CBV 1.2 Trade Item Master Data Attributes in section
     9 of the standard.
     '''
+    company = models.ForeignKey(
+        'quartet_masterdata.Company',
+        null=False,
+        help_text=_('The company, associated with this trade item.'),
+        verbose_name=_('Company'),
+        on_delete=models.CASCADE
+    )
     image = models.FileField(
         upload_to='qu4rtetmasterdataimages/',
         verbose_name=_('Icon'),
@@ -523,3 +536,36 @@ class TradeItemField(Field):
     class Meta:
         verbose_name = _('Trade Item Field')
         verbose_name_plural = _('Trade Item Fields')
+
+
+class Company(Address, GS1Location):
+    '''
+    Describes top-level company attributes- most importantly the company prefix
+    which is required for trade items.  Can be associated with
+    locations as well as a mechanism to show ownership, etc.
+    '''
+    gs1_company_prefix = models.CharField(
+        max_length=12,
+        verbose_name=_("GS1 Company Prefix"),
+        help_text=_("A GS1 Company Prefix is a unique string of four to twelve"
+                    " digits used to issue GS1 identification keys."),
+        null=False
+    )
+    company_type = models.ForeignKey(
+        'quartet_masterdata.CompanyType',
+        null=True,
+        verbose_name=_('Type'),
+        help_text=_('Describes the type of company.'),
+        on_delete=models.SET_NULL
+    )
+
+
+class CompanyType(GenericType):
+    '''
+    Describes the type of company.  For example, 3PL, CPO, Trading Partner,
+    etc.
+    '''
+
+    class Meta:
+        verbose_name = _('CompanyType')
+        verbose_name_plural = _('CompanyTypes')
