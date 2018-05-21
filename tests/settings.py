@@ -10,12 +10,12 @@ USE_TZ = True
 SECRET_KEY = "ffry&l%(2g&4^+&7e9nu0+@bpr!j-%0_zz3gn-l3bt)&k4=95r"
 
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": ":memory:",
-#     }
-# }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
+    }
+}
 
 ROOT_URLCONF = "tests.urls"
 
