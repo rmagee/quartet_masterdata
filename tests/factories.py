@@ -38,7 +38,7 @@ class LocationFactory(factory.django.DjangoModelFactory):
     postal_code = '19148'
     latitude = '39.906098'
     longitude = '-75.165733'
-    location_type = factory.Iterator(models.LocationType.objects.all())
+    location_type = factory.SubFactory(LocationTypeFactory)
 
 
 class LocationFieldFactory(factory.django.DjangoModelFactory):
@@ -48,7 +48,7 @@ class LocationFieldFactory(factory.django.DjangoModelFactory):
     name = 'Internal Code'
     value = 'PL72'
     description = 'Internal plant code #72.'
-    location = factory.Iterator(models.Location.objects.all())
+    location = factory.SubFactory(LocationFactory)
 
 
 class LocationIdentifierFactory(factory.django.DjangoModelFactory):
@@ -58,13 +58,37 @@ class LocationIdentifierFactory(factory.django.DjangoModelFactory):
     identifier = 'urn:epc:id:sgln:305555.123456.1'
     identifier_type = 'SGLN'
     description = 'First Base'
-    location = factory.Iterator(models.Location.objects.all())
+    location = factory.SubFactory(LocationFactory)
+
+class CompanyTypeFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.CompanyType
+
+    identifier = 'MANU'
+    description = 'Manufacturer'
+
+class CompanyFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.Company
+    SGLN = 'urn:epc:id:sgln:305555.123456.0'
+    gs1_company_prefix = '234123'
+    company_type = factory.SubFactory(CompanyTypeFactory)
+    GLN13 = '3055551234561'
+    SGLN = 'urn:epc:id:sgln:305555.123456.0'
+    name = "Headquarters"
+    address1 = 'One Citizens Bank Way'
+    country = 'US'
+    city = 'Philadelphia'
+    state_province = 'PA'
+    postal_code = '19148'
+    latitude = '39.906098'
+    longitude = '-75.165733'
 
 
 class TradeItemFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.TradeItem
-
+    company = factory.SubFactory(CompanyFactory)
     country_of_origin = 'US'
     drained_weight = None
     gross_weight = 10.5
@@ -91,10 +115,12 @@ class TradeItemFieldFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.TradeItemField
 
-    trade_item = factory.Iterator(models.TradeItem.objects.all())
+    trade_item = factory.SubFactory(TradeItemFactory)
     name = 'MATNO'
     value = '32423-33-333'
     description = 'SAP Internal Material Number'
+
+
 
 
 

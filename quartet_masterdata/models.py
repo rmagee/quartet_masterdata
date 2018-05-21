@@ -138,7 +138,7 @@ class Address(models.Model):
         null=True
     )
     state_province = models.CharField(
-        max_length=10,
+        max_length=20,
         verbose_name=_("State or Province"),
         help_text=_("One of the constituent units of a nation "
                     "having a federal government."),
@@ -196,7 +196,7 @@ class Location(Address, GS1Location):
         null=True,
         help_text=_('The company, if any, associated with this location.'),
         verbose_name=_('Company'),
-        on_delete=models.CASCADE
+        on_delete=models.SET_NULL
     )
     icon = models.FileField(
         upload_to='qu4rtetmasterdataimages/',
@@ -416,7 +416,7 @@ class TradeItem(ItemInstance):
         db_index=True
     )
     NDC = models.CharField(
-        max_length=10,
+        max_length=12,
         verbose_name=_("NDC"),
         help_text=_("The national drug code for the product. US Only."),
         null=True,

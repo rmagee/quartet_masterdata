@@ -23,8 +23,10 @@ class GeoEvent:
     Used as a result structure for geo history queries
     '''
 
-    def __init__(self, biz_location: str = None, event_time: datetime = None,
+    def __init__(self, event_id = None, biz_location: str = None,
+                 event_time: datetime = None,
                  longitude: float = None, latitude: float = None):
+        self.event_id = event_id
         self.biz_location = biz_location
         self.event_time = event_time
         self.longitude = longitude
@@ -38,6 +40,7 @@ class GeoEventSerializer(serializers.Serializer):
     '''
     Used to serialize GeoEvent during DRF calls to different formats.
     '''
+    event_id = serializers.UUIDField()
     biz_location = serializers.CharField(max_length=150)
     event_time = serializers.DateTimeField()
     longitude = serializers.FloatField()

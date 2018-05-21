@@ -12,8 +12,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Copyright 2018 SerialLab Corp.  All rights reserved.
+import json
+import os
 from rest_framework.test import APITestCase
 from django.urls import reverse
+from quartet_masterdata.geolocation import GeoEvent
+from datetime import datetime
+from quartet_epcis.parsing.parser import QuartetParser
 
 
 class APITests(APITestCase):
@@ -28,7 +33,8 @@ class APITests(APITestCase):
             GLN13="2345234523454",
             SGLN="urn:epc:id:sgln:23452.3452345.0",
         )
-        location_field = factories.LocationFieldFactory.create()
+        location_field = factories.LocationFieldFactory.create(
+            location=location)
         location_identifier = factories.LocationIdentifierFactory.create(
             identifier='urn:epc:id:sgln:305555.123456.2',
             identifier_type='SGLN',
@@ -42,5 +48,23 @@ class APITests(APITestCase):
                       )
         result = self.client.get(url, format='json')
         self.assertEqual(result.status_code, 200)
+        # print(result.data)
+
+    def test_entry_geohistory(self):
+        url = reverse(
+            'entry-geohistory-by-epc',
+            kwargs={'epc': 'urn:epc:id:sgtin:305555.0555555.1'}
+        )
+        result = self.client.get(url, format='json')
+        self.assertEqual(result.status_code, 200)
         print(result.data)
 
+    def _parse_test_data(self):
+        curpath = os.path.dirname(__file__)
+        parser = QuartetParser(
+            os.path.join(curpath, 'data/epcis.xml')
+        )
+        message_id = parser.parse()
+        print(parser.event_cache)
+        parser.clear_cache()
+        return message_id
