@@ -29,6 +29,9 @@ The full documentation is at https://serial-lab.gitlab.io/quartet_masterdata/
 
 Quickstart
 ----------
+The QU4RTET Master Data module comes pre-configured in the QU4RTET project;
+however, if you need to add it to a test installation manually peform the
+following:
 
 Install quartet_masterdata::
 
@@ -36,7 +39,7 @@ Install quartet_masterdata::
 
 Add it to your `INSTALLED_APPS`:
 
-.. code-block:: python
+.. code-block:: text
 
     INSTALLED_APPS = (
         ...
@@ -46,7 +49,7 @@ Add it to your `INSTALLED_APPS`:
 
 Add quartet_masterdata's URL patterns:
 
-.. code-block:: python
+.. code-block:: text
 
     from quartet_masterdata import urls as quartet_masterdata_urls
 
