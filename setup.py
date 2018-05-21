@@ -5,7 +5,7 @@ import re
 import sys
 
 try:
-    from setuptools import setup
+    from setuptools import setup, find_packages
 except ImportError:
     from distutils.core import setup
 
@@ -48,15 +48,13 @@ setup(
     name='quartet_masterdata',
     version=version,
     description="""Models and APIs to support material, lot and location master data.""",
-    long_description=readme + '\n\n' + history,
-    author='Rob Magee',
+    long_description=readme,
+    author='SerialLab, Corp',
     author_email='slab@serial-lab.com',
     url='https://gitlab.com/serial-lab/quartet_masterdata',
-    packages=[
-        'quartet_masterdata',
-    ],
+    packages=find_packages(),
     include_package_data=True,
-    install_requires=["django-model-utils>=2.0",],
+    install_requires=[],
     license="GPLv3",
     zip_safe=False,
     keywords='quartet_masterdata',
@@ -69,5 +67,6 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
 )

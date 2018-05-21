@@ -19,12 +19,12 @@ from rest_framework import views, status
 from quartet_masterdata import models, serializers
 from quartet_epcis.models.entries import EntryEvent
 from quartet_masterdata.geolocation import GeoEvent, GeoEventSerializer
-from typing import List
 
 
 class LocationByIdentifierView(views.APIView):
     '''
-    Returns a Location detail record based on the inbound identifier.
+    Returns a Location detail record based on the inbound SGLN identifier.
+    The location viewset can return by database primary key.
     '''
 
     def get(self, request, format=None, identifier=None):
@@ -52,6 +52,19 @@ class EntryGeoHistoryView(views.APIView):
     '''
     Returns a list of events and lat/long co-ordinates associated
     with any GLNs in the events.
+
+    To use, specify the URL as such (when used in quartet):
+
+    ..code-block:: text
+
+        http[s]://[hostname]:[port]/masterdata/entry-geohistory-by-epc/[urn value]
+
+    For example:
+
+    ..code-block:: text
+
+        http://localhost:8000/masterdata/entry-geohistory-by-epc/urn:epc:id:sgtin:305555.0555555.1/
+
     '''
 
     def get(self, request, format=None, epc=None, epc_pk=None):

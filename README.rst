@@ -15,6 +15,13 @@ GS1 CBV 1.2 Implementation for Trade Items and Location Master Data
 Models and APIs to support material, lot and location master data within
 QU4RTET as defined in the *GS1 Core Business Vocabulary*.
 
+Geo-Location/History APIs
+-------------------------
+By cross-referencing BizLocation and other information from the `quartet_epcis`
+module, `quartet_masterdata` provides full geo-location (lat, long) by
+item by EPCIS event.  This provides the `quartet-ui` interface a mechanism
+by which to display mapping and geo-location visual assets.
+
 Documentation
 -------------
 
@@ -53,26 +60,20 @@ Add quartet_masterdata's URL patterns:
 Features
 --------
 
-* TODO
+* GeoLocation APIs
+* API and Database Support For Product Master Material
+* API and Database Support for
 
 Running Tests
 -------------
+
+** REQUIRES PYTHON 3 **
 
 Does the code actually work?
 
 ::
 
     source <YOURVIRTUALENV>/bin/activate
-    (myenv) $ pip install tox
-    (myenv) $ tox
+    (myenv) $ pip install -r requirements_test.txt
+    (myenv) $ python runtests.py
 
-Credits
--------
-
-Tools used in rendering this package:
-
-*  Cookiecutter_
-*  `cookiecutter-djangopackage`_
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`cookiecutter-djangopackage`: https://github.com/pydanny/cookiecutter-djangopackage

@@ -11,19 +11,24 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import sys, os, django
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
 
 cwd = os.getcwd()
 parent = os.path.dirname(cwd)
 sys.path.append(parent)
+print(sys.path)
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
+django.setup()
 
 from recommonmark.parser import CommonMarkParser
 import quartet_masterdata
+from quartet_masterdata import *
 import sphinx_rtd_theme
 
 # -- General configuration -----------------------------------------------------
@@ -51,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'quartet_masterdata'
-copyright = u'2018, Rob Magee'
+copyright = u'2018 SerialLab, Corp.'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
