@@ -42,6 +42,6 @@ STATIC_URL = '/static/'
 
 try:
     from tests.local_test_settings import *
-except ModuleNotFoundError:
+except ImportError:
     pass
 
