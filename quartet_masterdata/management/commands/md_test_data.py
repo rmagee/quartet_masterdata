@@ -14,6 +14,7 @@
 # Copyright 2018 SerialLab Corp.  All rights reserved.
 
 from quartet_masterdata import models
+from django.db import utils
 import factory
 from django.core.management.base import BaseCommand, CommandError
 
@@ -22,18 +23,40 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print('creating data')
-        LocationTypeFactory.create()
-        LocationFactory.create()
-        # LocationFactory.create(
-        #     GLN13="2345234523451",
-        #     SGLN="urn:epc:id:sgln:23452.3452345.3",
-        #     name='test', latitude=12.232,
-        #     longitude=33.2343)
-        LocationFieldFactory.create()
-        LocationIdentifierFactory.create()
-        CompanyFactory.create()
-        TradeItemFactory.create()
-        TradeItemFieldFactory.create()
+        try:
+            LocationTypeFactory.create()
+        except utils.IntegrityError:
+            pass
+
+        try:
+            LocationFactory.create()
+        except utils.IntegrityError:
+            pass
+        try:
+            LocationFactory.create(
+                GLN13="2345234523451",
+                SGLN="urn:epc:id:sgln:23452.3452345.3",
+                name='test', latitude=12.232,
+                longitude=33.2343)
+        except utils.IntegrityError:
+            pass
+        try:
+            LocationFieldFactory.create()
+        except utils.IntegrityError:
+            pass
+            LocationIdentifierFactory.create()
+        try:
+            CompanyFactory.create()
+        except utils.IntegrityError:
+            pass
+        try:
+            TradeItemFactory.create()
+        except utils.IntegrityError:
+            pass
+        try:
+            TradeItemFieldFactory.create()
+        except utils.IntegrityError:
+            pass
         print('done')
 
 
