@@ -74,8 +74,7 @@ class EntryGeoHistoryView(views.APIView):
             'event__event_time'
         ).select_related(
             'event'
-        ).filter(**kwargs).only(
-                                'event__event_id',
+        ).filter(**kwargs).only('event__id',
                                 'event__event_time',
                                 'event__biz_location')
         # now get the GPS info for each biz_location
@@ -91,7 +90,7 @@ class EntryGeoHistoryView(views.APIView):
             )
             gl.latitude = lat
             gl.longitude = long
-            gl.event_id = location.event.id
+            gl.id = location.event.id
             serializer = GeoEventSerializer(gl)
             ret.append(serializer.data)
         return Response(ret)
