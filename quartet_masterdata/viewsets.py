@@ -63,7 +63,7 @@ class MeasurementViewSet(ModelViewSet):
 
 class CompanyViewSet(ModelViewSet):
     '''
-    CRUD ready model view for the TradeItem model.
+    CRUD ready model view for the Company model.
     '''
     queryset = models.Company.objects.all()
     serializer_class = serializers.CompanySerializer
