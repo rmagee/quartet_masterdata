@@ -24,6 +24,9 @@ class LocationViewSet(ModelViewSet):
     '''
     queryset = models.Location.objects.all()
     serializer_class = serializers.LocationSerializer
+    search_fields = ['GLN13', 'SGLN', 'address1', 'address2',
+                     'address3', 'city', 'country', 'name',
+                     'postal_code', 'state_province']
 
 
 class LocationTypeViewSet(ModelViewSet):
@@ -56,6 +59,17 @@ class MeasurementViewSet(ModelViewSet):
     '''
     queryset = models.Measurement.objects.all()
     serializer_class = serializers.MeasurementSerializer
+
+
+class CompanyViewSet(ModelViewSet):
+    '''
+    CRUD ready model view for the TradeItem model.
+    '''
+    queryset = models.Company.objects.all()
+    serializer_class = serializers.CompanySerializer
+    search_fields = ['GLN13', 'SGLN', 'address1', 'address2', 'address3',
+                     'city', 'country', 'gs1_company_prefix', 'name',
+                     'postal_code', 'state_province']
 
 
 class TradeItemViewSet(ModelViewSet):

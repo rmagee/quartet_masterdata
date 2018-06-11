@@ -60,6 +60,16 @@ class LocationSerializer(ModelSerializer):
         fields = '__all__'
 
 
+class CompanySerializer(ModelSerializer):
+    '''
+    Default serializer for the Company Model
+    '''
+
+    class Meta:
+        model = models.Company
+        fields = '__all__'
+
+
 class TradeItemFieldSerializer(ModelSerializer):
     '''
     Default serializer for the TradeItemField model.

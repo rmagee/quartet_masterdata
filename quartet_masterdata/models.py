@@ -234,8 +234,8 @@ class Location(Address, GS1Location):
     )
     location_type = models.ForeignKey(
         'quartet_masterdata.LocationType',
-        help_text=_("Location Type"),
-        verbose_name=_("An additional classifier that can be used to identify"
+        verbose_name=_("Location Type"),
+        help_text=_("An additional classifier that can be used to identify"
                        "the location outside of the CBV codes.  This "
                        "can be an internal classifier or a human readable "
                        "that lends further clarity to the location record."),
