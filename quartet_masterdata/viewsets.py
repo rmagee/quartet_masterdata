@@ -78,6 +78,13 @@ class TradeItemViewSet(ModelViewSet):
     '''
     queryset = models.TradeItem.objects.all()
     serializer_class = serializers.TradeItemSerializer
+    search_fields = ['GTIN14', 'NDC', 'additional_id', 'country_of_origin',
+                     'description_short', 'dosage_form_type', 'drained_weight',
+                     'drained_weight_uom', 'functional_name', 'gross_weight',
+                     'gross_weight_uom', 'label_description', 'manufacturer_name',
+                     'net_content_description', 'net_weight', 'net_weight_uom',
+                     'regulated_product_name', 'strength_description',
+                     'trade_item_description']
 
 
 class TradeItemFieldViewSet(ModelViewSet):
