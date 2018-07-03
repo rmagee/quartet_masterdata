@@ -59,9 +59,11 @@ setup(
     zip_safe=False,
     keywords='quartet_masterdata',
     classifiers=[
-        'Development Status :: 3 - Alpha',
-        'Framework :: Django',
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Healthcare Industry',
+        'Intended Audience :: Manufacturing',
         'Intended Audience :: Developers',
+        'Framework :: Django',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Natural Language :: English',
         'Programming Language :: Python :: 3.3',
