@@ -70,6 +70,16 @@ class CompanySerializer(ModelSerializer):
         fields = '__all__'
 
 
+class CompanyTypeSerializer(ModelSerializer):
+    '''
+    Default serializer for the CompanyType Model
+    '''
+
+    class Meta:
+        model = models.CompanyType
+        fields = '__all__'
+
+
 class TradeItemFieldSerializer(ModelSerializer):
     '''
     Default serializer for the TradeItemField model.

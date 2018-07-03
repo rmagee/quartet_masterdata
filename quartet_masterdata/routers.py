@@ -48,6 +48,11 @@ router.register(
     base_name='companies'
 )
 router.register(
+    r'company-types',
+    viewsets.CompanyTypeViewSet,
+    base_name='company-types'
+)
+router.register(
     r'trade-item-fields',
     viewsets.TradeItemFieldViewSet,
     base_name='trade-item-fields'
