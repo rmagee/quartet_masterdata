@@ -72,6 +72,14 @@ class CompanyViewSet(ModelViewSet):
                      'postal_code', 'state_province']
 
 
+class CompanyTypeViewSet(ModelViewSet):
+    '''
+    CRUD ready model view for the Company Type model.
+    '''
+    queryset = models.CompanyType.objects.all()
+    serializer_class = serializers.CompanyTypeSerializer
+
+
 class TradeItemViewSet(ModelViewSet):
     '''
     CRUD ready model view for the TradeItem model.
