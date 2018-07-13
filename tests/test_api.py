@@ -16,8 +16,6 @@ import json
 import os
 from rest_framework.test import APITestCase
 from django.urls import reverse
-from quartet_masterdata.geolocation import GeoEvent
-from datetime import datetime
 from quartet_epcis.parsing.parser import QuartetParser
 
 
