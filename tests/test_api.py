@@ -16,9 +16,10 @@ import json
 import os
 from rest_framework.test import APITestCase
 from django.urls import reverse
-from django.contrib.auth.models import Permission, User
-from django.db.models import Q
+from django.contrib.auth.models import Group, User
 from quartet_epcis.parsing.parser import QuartetParser
+from quartet_masterdata.management.commands.create_masterdata_groups import \
+    Command
 
 
 class APITests(APITestCase):
@@ -44,15 +45,12 @@ class APITests(APITestCase):
         self.setup_user()
 
     def setup_user(self):
+        Command().handle()
         user = User.objects.create_user(username='testuser',
                                         password='unittest',
                                         email='testuser@seriallab.local')
-        permissions = Permission.objects.filter(
-            Q(codename__endswith='_location') and
-            Q(codename__endswith='_authenticationinfo') and
-            Q(codename__endswith='_endpoint')
-        )
-        user.user_permissions.set(permissions)
+        group = Group.objects.get(name='Master Data Access')
+        user.groups.add(group)
         user.save()
         self.client.force_authenticate(user=user)
         self.user = user
