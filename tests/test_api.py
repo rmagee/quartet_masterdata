@@ -16,6 +16,8 @@ import json
 import os
 from rest_framework.test import APITestCase
 from django.urls import reverse
+from django.contrib.auth.models import Permission, User
+from django.db.models import Q
 from quartet_epcis.parsing.parser import QuartetParser
 
 
@@ -39,6 +41,21 @@ class APITests(APITestCase):
             description='Second Base',
             location=location
         )
+        self.setup_user()
+
+    def setup_user(self):
+        user = User.objects.create_user(username='testuser',
+                                        password='unittest',
+                                        email='testuser@seriallab.local')
+        permissions = Permission.objects.filter(
+            Q(codename__endswith='_location') and
+            Q(codename__endswith='_authenticationinfo') and
+            Q(codename__endswith='_endpoint')
+        )
+        user.user_permissions.set(permissions)
+        user.save()
+        self.client.force_authenticate(user=user)
+        self.user = user
 
     def test_location_by_id(self):
         url = reverse('location-by-identifier',

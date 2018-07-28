@@ -18,46 +18,7 @@ from django.db import utils
 import factory
 from django.core.management.base import BaseCommand, CommandError
 
-class Command(BaseCommand):
-    help = 'Creates some test master material data for development.'
 
-    def handle(self, *args, **options):
-        print('creating data')
-        try:
-            LocationTypeFactory.create()
-        except utils.IntegrityError:
-            pass
-
-        try:
-            LocationFactory.create()
-        except utils.IntegrityError:
-            pass
-        try:
-            LocationFactory.create(
-                GLN13="2345234523451",
-                SGLN="urn:epc:id:sgln:23452.3452345.3",
-                name='test', latitude=12.232,
-                longitude=33.2343)
-        except utils.IntegrityError:
-            pass
-        try:
-            LocationFieldFactory.create()
-        except utils.IntegrityError:
-            pass
-            LocationIdentifierFactory.create()
-        try:
-            CompanyFactory.create()
-        except utils.IntegrityError:
-            pass
-        try:
-            TradeItemFactory.create()
-        except utils.IntegrityError:
-            pass
-        try:
-            TradeItemFieldFactory.create()
-        except utils.IntegrityError:
-            pass
-        print('done')
 
 
 class LocationTypeFactory(factory.django.DjangoModelFactory):
@@ -163,3 +124,48 @@ class TradeItemFieldFactory(factory.django.DjangoModelFactory):
     name = 'MATNO'
     value = '32423-33-333'
     description = 'SAP Internal Material Number'
+
+class Command(BaseCommand):
+    help = 'Creates some test master material data for development.'
+
+    def handle(self, *args, **options):
+        print('creating data')
+        try:
+            LocationTypeFactory.create()
+        except utils.IntegrityError:
+            pass
+
+        try:
+            LocationFactory.create()
+        except utils.IntegrityError:
+            pass
+        try:
+            LocationFactory.create(
+                GLN13="2345234523451",
+                SGLN="urn:epc:id:sgln:23452.3452345.3",
+                name='Plant 6', latitude=12.232,
+                longitude=33.2343)
+        except utils.IntegrityError:
+            pass
+
+        try:
+            LocationFieldFactory.create()
+        except utils.IntegrityError:
+            pass
+        try:
+            LocationIdentifierFactory.create()
+        except utils.IntegrityError:
+            pass
+        try:
+            CompanyFactory.create()
+        except utils.IntegrityError:
+            pass
+        try:
+            TradeItemFactory.create()
+        except utils.IntegrityError:
+            pass
+        try:
+            TradeItemFieldFactory.create()
+        except utils.IntegrityError:
+            pass
+        print('done')

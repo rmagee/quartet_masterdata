@@ -26,6 +26,7 @@ class LocationByIdentifierView(views.APIView):
     Returns a Location detail record based on the inbound SGLN identifier.
     The location viewset can return by database primary key.
     '''
+    queryset = models.Location.objects.none()
 
     def get(self, request, format=None, identifier=None):
         try:
@@ -66,6 +67,7 @@ class EntryGeoHistoryView(views.APIView):
         http://localhost:8000/masterdata/entry-geohistory-by-epc/urn:epc:id:sgtin:305555.0555555.1/
 
     '''
+    queryset = models.Location.objects.none()
 
     def get(self, request, format=None, epc=None, epc_pk=None):
         # get all the events and biz_locations ordered by date
