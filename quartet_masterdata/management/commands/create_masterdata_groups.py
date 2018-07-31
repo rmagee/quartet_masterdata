@@ -1,4 +1,4 @@
-# This program is free software: you can redistribute it and/or modify
+# This program is free software: you can redistribute it |/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -32,8 +32,8 @@ class Command(BaseCommand):
         )
         if created:
             permissions = Permission.objects.filter(
-                Q(codename__endswith='_location') and
-                Q(codename__endswith='_authenticationinfo') and
+                Q(codename__endswith='_location') |
+                Q(codename__endswith='_authenticationinfo') |
                 Q(codename__endswith='_endpoint')
             )
             group.permissions.set(permissions)
