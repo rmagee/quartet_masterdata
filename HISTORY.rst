@@ -19,3 +19,4 @@ History
   across all views and viewsets.
 * New convenience management command to support the creation of default groups.
 * Fixed management command error (patch 1)
+* Fixed wrong pattern identifier in NDC pattern choices
