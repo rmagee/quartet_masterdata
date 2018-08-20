@@ -9,7 +9,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 NDC_CHOICES = (
     ('4-4-2', '4-4-2'),
     ('5-3-2', '5-3-2'),
-    ('4-5-1', '5-4-1'),
+    ('5-4-1', '5-4-1'),
 )
 
 
