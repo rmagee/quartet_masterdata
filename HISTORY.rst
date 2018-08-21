@@ -20,3 +20,4 @@ History
 * New convenience management command to support the creation of default groups.
 * Fixed management command error (patch 1)
 * Fixed wrong pattern identifier in NDC pattern choices
+* Fixed unique NDC issue in TradeItem model.

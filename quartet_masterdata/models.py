@@ -419,8 +419,7 @@ class TradeItem(ItemInstance):
         max_length=12,
         verbose_name=_("NDC"),
         help_text=_("The national drug code for the product. US Only."),
-        null=True,
-        unique=True
+        null=True
     )
     NDC_pattern = models.CharField(
         max_length=5,
