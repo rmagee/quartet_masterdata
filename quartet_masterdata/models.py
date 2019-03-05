@@ -558,6 +558,10 @@ class Company(Address, GS1Location):
         on_delete=models.SET_NULL
     )
 
+    class Meta:
+        verbose_name = _('Company')
+        verbose_name_plural = _('Companies')
+
 
 class CompanyType(GenericType):
     '''

@@ -19,3 +19,4 @@ from django.apps import AppConfig
 
 class QuartetMasterdataConfig(AppConfig):
     name = 'quartet_masterdata'
+    verbose_name = "QU4RTET Masterdata"
