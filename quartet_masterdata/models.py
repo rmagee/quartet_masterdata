@@ -512,7 +512,11 @@ class TradeItem(ItemInstance):
                     "item using brand and other descriptors."),
         null=True
     )
-
+    serial_number_length = models.PositiveSmallIntegerField(
+        verbose_name=_("Serial Number Length"),
+        help_text=_("The length of this material's serial number field"),
+        null=True
+    )
     class Meta:
         verbose_name = _('Trade Item')
         verbose_name_plural = _('Trade Items')
