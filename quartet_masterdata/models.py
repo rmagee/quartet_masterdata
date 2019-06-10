@@ -517,6 +517,12 @@ class TradeItem(ItemInstance):
         help_text=_("The length of this material's serial number field"),
         null=True
     )
+    pack_count = models.PositiveIntegerField(
+        verbose_name=_("Pack Count"),
+        help_text=_("The number of items packed into this package "
+                    "(where appropriate)."),
+        null=True
+    )
     class Meta:
         verbose_name = _('Trade Item')
         verbose_name_plural = _('Trade Items')
