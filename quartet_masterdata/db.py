@@ -12,7 +12,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Copyright 2019 SerialLab Corp.  All rights reserved.
-from quartet_masterdata.models import Company, Location
+from quartet_masterdata.models import Company, Location, TradeItem
 
 
 class DBProxy:
@@ -44,3 +44,33 @@ class DBProxy:
             if qd.exists():
                 partner = qd.values()
         return partner
+
+    def get_company_prefix_length(self, gtin14: str) -> int:
+        """
+        Uses the GTIN 14 to look up the company prefix in the trade items
+        table.
+        :param gtin14: The gtin
+        :return: The length of the company prefix record.
+        """
+        try:
+            trade_item = TradeItem.objects.select_related().get(
+                GTIN14=gtin14)
+            if trade_item.NDC:
+                company_prefix_length = 2 + len(trade_item.NDC.split('-')[0])
+            else:
+                company_prefix_length = len(
+                    trade_item.company.gs1_company_prefix)
+        except TradeItem.DoesNotExist:
+            raise self.TradeItemConfigurationError(
+                'There is no trade item and corresponding company defined '
+                'for gtin %s.  This must be defined '
+                'in order for the system to '
+                'determine company prefix length. '
+                'Make sure you have a trade item configured and assigned to '
+                'a company that has a valid gs1 company prefix entry.' %
+                gtin14
+            )
+        return company_prefix_length
+
+    class TradeItemConfigurationError(Exception):
+        pass
