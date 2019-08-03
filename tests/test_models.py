@@ -11,6 +11,7 @@ Tests for `quartet_masterdata` models module.
 from django.test import TestCase
 from django.db.models import Q
 from quartet_masterdata import models
+from quartet_masterdata.db import DBProxy
 
 
 class TestQuartet_Masterdata(TestCase):
@@ -71,3 +72,6 @@ class TestQuartet_Masterdata(TestCase):
         self.assertEqual(ti.strength_description, '100mg')
         self.assertEqual(ti.trade_item_description, 'Supressitol Brand '
                                                     'Suppression Tablets')
+
+        self.assertEqual(
+            DBProxy().get_company_prefix_length('12341234123411'), 6)
