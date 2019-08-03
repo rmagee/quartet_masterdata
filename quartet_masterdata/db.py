@@ -45,32 +45,78 @@ class DBProxy:
                 partner = qd.values()
         return partner
 
-    def get_company_prefix_length(self, gtin14: str) -> int:
+    def get_company_prefix_length(self, barcode: str) -> int:
         """
         Uses the GTIN 14 to look up the company prefix in the trade items
         table.
         :param gtin14: The gtin
         :return: The length of the company prefix record.
         """
-        try:
-            trade_item = TradeItem.objects.select_related().get(
-                GTIN14=gtin14)
-            if trade_item.NDC:
-                company_prefix_length = 2 + len(trade_item.NDC.split('-')[0])
-            else:
-                company_prefix_length = len(
-                    trade_item.company.gs1_company_prefix)
-        except TradeItem.DoesNotExist:
-            raise self.TradeItemConfigurationError(
-                'There is no trade item and corresponding company defined '
-                'for gtin %s.  This must be defined '
-                'in order for the system to '
-                'determine company prefix length. '
-                'Make sure you have a trade item configured and assigned to '
-                'a company that has a valid gs1 company prefix entry.' %
-                gtin14
-            )
+
+        company_prefix_length = None
+        if len(barcode) == 14:
+            try:
+                trade_item = TradeItem.objects.select_related().get(
+                    GTIN14=barcode)
+                if trade_item.NDC:
+                    company_prefix_length = 2 + len(
+                        trade_item.NDC.split('-')[0])
+                else:
+                    company_prefix_length = len(
+                        trade_item.company.gs1_company_prefix)
+            except TradeItem.DoesNotExist:
+                company_prefix_length = self._get_cp_len_by_company(barcode)
+        elif len(barcode) == 18:
+            company_prefix_length = self._get_cp_len_by_company(barcode)
+        else:
+            raise self.InvalidBarcode('This class will only look up company '
+                                      'prefix information based on SSCC and '
+                                      'GTIN 14 barcode strings.  If your '
+                                      'barcode string contains app identifiers '
+                                      'this may be the cause of your exception '
+                                      'please remove app identifiers prior '
+                                      'to invoking this function.')
         return company_prefix_length
 
+    def _get_cp_len_by_company(self, barcode):
+        """
+        Returns the company prefix length by trying to find a company with
+        the gs1_company_prefix field defined and returning that length.
+        :param barcode: The barcode value with the embedded prefix.
+        :return: The company prefix length.
+        """
+        cp_index = 5
+        while cp_index < 13:
+            try:
+                company = Company.objects.get(
+                    gs1_company_prefix__startswith=barcode[1:cp_index]
+                )
+                company_prefix_length = len(company.gs1_company_prefix)
+                break
+            except (Company.DoesNotExist, Company.MultipleObjectsReturned):
+                if cp_index == 12:
+                    self._no_company_error()
+                cp_index = cp_index + 1
+        return company_prefix_length
+
+    def _no_company_error(self):
+        raise self.CompanyConfigurationError(
+            'Neither a Company or Trade Item with the company'
+            'prefix found in the barcode '
+            'could not be located in the '
+            'database.  Check to make sure '
+            'this company is configured '
+            'and has a company prefix '
+            'field value. Make sure there is a valid Trade Item and/or '
+            'Company configured. (Trade Item for GTINs and Company for '
+            'SSCCs.'
+        )
+
+    class InvalidBarcode(Exception):
+        pass
+
     class TradeItemConfigurationError(Exception):
+        pass
+
+    class CompanyConfigurationError(Exception):
         pass

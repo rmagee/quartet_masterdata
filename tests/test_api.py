@@ -20,11 +20,13 @@ from django.contrib.auth.models import Group, User
 from quartet_epcis.parsing.parser import QuartetParser
 from quartet_masterdata.management.commands.create_masterdata_groups import \
     Command
-
+from quartet_masterdata.db import DBProxy
+from tests import factories
 
 class APITests(APITestCase):
     def setUp(self):
-        from tests import factories
+
+        comp = factories.CompanyFactory.create()
         location_type = factories.LocationTypeFactory.create()
         location = factories.LocationFactory.create()
         location2 = factories.LocationFactory.create(
@@ -63,6 +65,25 @@ class APITests(APITestCase):
         self.assertEqual(result.status_code, 200)
         # print(result.data)
 
+    def test_get_cpl(self):
+        company2 = factories.CompanyFactory.create(
+            name='fake2',
+            gs1_company_prefix='234125',
+            GLN13='3055551234545',
+            SGLN='urn:epc:id:sgln:305555.123456.5'
+        )
+        factories.TradeItemFactory.create(
+            GTIN14='22345678901234',
+            company=company2,
+            NDC='2345-67-8901'
+        )
+        url = reverse('get-company-prefix-length',
+                      kwargs={'barcode':'22345678901234'}
+                      )
+        result = self.client.get(url, format='json')
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.data, 6)
+
     def test_entry_geohistory(self):
         url = reverse(
             'entry-geohistory-by-epc',
@@ -81,3 +102,36 @@ class APITests(APITestCase):
         print(parser.event_cache)
         parser.clear_cache()
         return message_id
+
+    def test_get_company_prefix_length(self):
+        factories.CompanyFactory.create(
+            name='fake',
+            gs1_company_prefix = '234123789012',
+            GLN13='3055551234564',
+            SGLN='urn:epc:id:sgln:305555.123456.1'
+        )
+        company2 = factories.CompanyFactory.create(
+            name='fake',
+            gs1_company_prefix = '234124',
+            GLN13='3055551234544',
+            SGLN='urn:epc:id:sgln:305555.123456.2'
+        )
+        db = DBProxy()
+        with self.assertRaises(db.InvalidBarcode):
+            db.get_company_prefix_length('00023412378901200010')
+        self.assertEqual(
+            db.get_company_prefix_length('023412378901200010'),
+            12
+        )
+        self.assertEqual(
+            db.get_company_prefix_length('12341244123411'),
+            6
+        )
+        factories.TradeItemFactory.create(
+            company=company2
+        )
+        self.assertEqual(
+            db.get_company_prefix_length('12341234123411'),
+            6
+        )
+

@@ -19,6 +19,7 @@ from rest_framework import views, status
 from quartet_masterdata import models, serializers
 from quartet_epcis.models.entries import EntryEvent
 from quartet_masterdata.geolocation import GeoEvent, GeoEventSerializer
+from quartet_masterdata.db import DBProxy
 
 
 class LocationByIdentifierView(views.APIView):
@@ -96,3 +97,25 @@ class EntryGeoHistoryView(views.APIView):
             serializer = GeoEventSerializer(gl)
             ret.append(serializer.data)
         return Response(ret)
+
+
+class GetCompanyPrefixLength(views.APIView):
+    """
+    Returns a company prefix by SSCC or GTIN 14.  Only 14 and 18 digit
+    numbers may be used so strip any application identifiers prior to calling
+    this service.
+    """
+    queryset = models.Company.objects.none()
+
+    def get(self, request, barcode=None):
+        db = DBProxy()
+        try:
+            return Response(db.get_company_prefix_length(barcode))
+        except db.InvalidBarcode:
+            return Response('Invalid barcode.  Must be an 18 or 14 digit '
+                            'SSCC 18 or GTIN 14.',
+                            status=status.HTTP_400_BAD_REQUEST)
+        except db.CompanyConfigurationError:
+            return Response('No company or trade item matches the value'
+                            'barcode provided.',
+                            status.HTTP_400_BAD_REQUEST)

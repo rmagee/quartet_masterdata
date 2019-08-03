@@ -30,10 +30,12 @@ urlpatterns = [
         regex="^entry-geohistory-by-epc/(?P<epc>[[\w\s\W]{1,150})/$",
         view=views.EntryGeoHistoryView.as_view(),
         name='entry-geohistory-by-epc',
-    )
-    # url(
-    #     regex="^Location/(?P<pk>\d+)/~delete/$",
-    #     view=views.LocationDeleteView.as_view(),
-    #     name='Location_delete',
+    ),
+    url(
+            regex="^get-company-prefix-length/(?P<barcode>[[\w\s\W]{1,18})/$",
+            view=views.GetCompanyPrefixLength.as_view(),
+            name='get-company-prefix-length',
+        )
+
 	]
 urlpatterns += router.urls

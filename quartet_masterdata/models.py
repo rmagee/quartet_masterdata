@@ -30,7 +30,7 @@ class Field(models.Model):
     )
     description = models.CharField(
         max_length=500,
-        null=True,
+        null=True, blank=True,
         help_text=_('A short description.'),
         verbose_name=_('Description')
     )
@@ -74,7 +74,7 @@ class GS1Location(models.Model):
                     "commerce. The GLN-13 is defined by GS1"),
         unique=True,
         db_index=True,
-        null=True
+        null=True, blank=True
     )
     SGLN = models.CharField(
         max_length=150,
@@ -84,7 +84,7 @@ class GS1Location(models.Model):
                     "specific building or "
                     "a specific unit of shelving within a warehouse.  The"
                     "SGLN is expressed as a URN value."),
-        null=True,
+        null=True, blank=True,
         unique=True,
         db_index=True
     )
@@ -109,46 +109,46 @@ class Address(models.Model):
         verbose_name=_("Street Address One"),
         help_text=_("For example, the name of the street and the number "
                     "in the street or the name of a building"),
-        null=True
+        null=True, blank=True
     )
     address2 = models.CharField(
         max_length=1000,
         verbose_name=_("Street Address Two"),
         help_text=_("The second free form line complements the first "
                     "free form line to locate the party or location."),
-        null=True
+        null=True, blank=True
     )
     address3 = models.CharField(
         max_length=1000,
         verbose_name=_("Street Address Three"),
         help_text=_("The third free form line complements the first and "
                     "second free form lines where necessary."),
-        null=True
+        null=True, blank=True
     )
     country = models.CharField(
         max_length=2,
         verbose_name=_("Country Code"),
         help_text=_("Country ISO 3166-1 alpha-2 Code"),
-        null=True
+        null=True, blank=True
     )
     city = models.CharField(
         max_length=50,
         verbose_name=_("city"),
         help_text=_("City"),
-        null=True
+        null=True, blank=True
     )
     state_province = models.CharField(
         max_length=20,
         verbose_name=_("State or Province"),
         help_text=_("One of the constituent units of a nation "
                     "having a federal government."),
-        null=True
+        null=True, blank=True
     )
     postal_code = models.CharField(
         max_length=20,
         verbose_name=_("Postal Code"),
         help_text=_("Postal Code"),
-        null=True
+        null=True, blank=True
     )
     latitude = models.DecimalField(
         max_digits=9,
@@ -157,7 +157,7 @@ class Address(models.Model):
         help_text=_(" Latitude of the location, in degrees. Positive "
                     "numbers are northern latitude; negative numbers "
                     "are southern latitude."),
-        null=True
+        null=True, blank=True
     )
     longitude = models.DecimalField(
         max_digits=9,
@@ -166,7 +166,7 @@ class Address(models.Model):
         help_text=_("Longitude of the location, in degrees. Positive "
                     "numbers are eastern longitude; negative numbers "
                     "are western longitude."),
-        null=True
+        null=True, blank=True
     )
 
     def __str__(self):
@@ -193,7 +193,7 @@ class Location(Address, GS1Location):
     '''
     company = models.ForeignKey(
         'quartet_masterdata.Company',
-        null=True,
+        null=True, blank=True,
         help_text=_('The company, if any, associated with this location.'),
         verbose_name=_('Company'),
         on_delete=models.SET_NULL
@@ -202,7 +202,7 @@ class Location(Address, GS1Location):
         upload_to='qu4rtetmasterdataimages/',
         verbose_name=_('Icon'),
         help_text=_('An icon to represent the location in a GUI or report.'),
-        null=True
+        null=True, blank=True
     )
     site = models.ForeignKey(
         'self',
@@ -211,7 +211,7 @@ class Location(Address, GS1Location):
                     "...if at all. "
                     "For a Sub-site location, this is the identifier of "
                     "the parent location."),
-        null=True,
+        null=True, blank=True,
         on_delete=models.CASCADE
     )
     sst = models.SmallIntegerField(
@@ -220,7 +220,7 @@ class Location(Address, GS1Location):
                     "of the sub-site location. This master data attribute is "
                     "only applicable to a sub-site location.  This value is "
                     "expressed as a single numerical code."),
-        null=True
+        null=True, blank=True
     )
     ssa = models.CharField(
         max_length=1000,
@@ -230,7 +230,7 @@ class Location(Address, GS1Location):
                     "attribute is only applicable to a sub-site location. "
                     "Sub-site attributes are expressed as a comma- separated "
                     "list of zero or more numerical codes"),
-        null=True
+        null=True, blank=True
     )
     location_type = models.ForeignKey(
         'quartet_masterdata.LocationType',
@@ -239,7 +239,7 @@ class Location(Address, GS1Location):
                        "the location outside of the CBV codes.  This "
                        "can be an internal classifier or a human readable "
                        "that lends further clarity to the location record."),
-        null=True,
+        null=True, blank=True,
         on_delete=models.CASCADE
     )
 
@@ -290,7 +290,7 @@ class LocationIdentifier(models.Model):
         max_length=150,
         verbose_name=_("Description"),
         help_text=_("A brief description of what the identifier represents."),
-        null=True
+        null=True, blank=True
     )
 
     class Meta:
@@ -324,7 +324,7 @@ class Measurement(models.Model):
         verbose_name=_("measurement_unit_code"),
         help_text=_("The unit of measure for the measurement. The code list "
                     "for this attribute is UN/ECE Recommendation 20"),
-        null=True
+        null=True, blank=True
     )
 
     def __str__(self):
@@ -341,48 +341,48 @@ class ItemInstance(models.Model):
         help_text=_("Country from which the goods are supplied. The code list "
                     "for this attribute is the ISO 3166-1 Alpha-2 list "
                     "of 2-letter country codes"),
-        null=True
+        null=True, blank=True
     )
     drained_weight = models.FloatField(
         verbose_name=_('Drained Weight'),
         help_text=_('The weight of the trade item when drained of its '
                     'liquid. For example 225 grm'),
-        null=True,
+        null=True, blank=True,
     )
     drained_weight_uom = models.CharField(
         max_length=5,
         verbose_name=_("Drained Weight UOM"),
         help_text=_("The unit of measure for the drained weight as defined in"
                     "UN/ECE Recommendation 20."),
-        null=True
+        null=True, blank=True
     )
     gross_weight = models.FloatField(
         verbose_name=_('Gross Weight'),
         help_text=_('Used to identify the gross weight of the trade item. '
                     'The gross weight includes all packaging materials '
                     'of the trade item.'),
-        null=True,
+        null=True, blank=True,
     )
     gross_weight_uom = models.CharField(
         max_length=5,
         verbose_name=_("Gross Weight UOM"),
         help_text=_("The unit of measure for the gross weight as defined in"
                     "UN/ECE Recommendation 20."),
-        null=True
+        null=True, blank=True
     )
     net_weight = models.FloatField(
         verbose_name=_('Net Weight'),
         help_text=_('Used to identify the net weight of the trade item. '
                     'Net weight excludes any packaging materials and applies '
                     'to all levels but consumer unit level.'),
-        null=True
+        null=True, blank=True
     )
     net_weight_uom = models.CharField(
         max_length=5,
         verbose_name=_("NET Weight UOM"),
         help_text=_("The unit of measure for the net weight as defined in"
                     "UN/ECE Recommendation 20."),
-        null=True
+        null=True, blank=True
     )
 
     class Meta:
@@ -405,7 +405,7 @@ class TradeItem(ItemInstance):
         upload_to='qu4rtetmasterdataimages/',
         verbose_name=_('Icon'),
         help_text=_('An image to represent the product in a GUI or report.'),
-        null=True
+        null=True, blank=True
     )
     GTIN14 = models.CharField(
         max_length=14,
@@ -419,13 +419,13 @@ class TradeItem(ItemInstance):
         max_length=12,
         verbose_name=_("NDC"),
         help_text=_("The national drug code for the product. US Only."),
-        null=True
+        null=True, blank=True
     )
     NDC_pattern = models.CharField(
         max_length=5,
         verbose_name=_("NDC_pattern"),
         help_text=_("The pattern of the NDC.  US Only.  Optional."),
-        null=True,
+        null=True, blank=True,
         choices=NDC_CHOICES
     )
     additional_id = models.CharField(
@@ -433,14 +433,14 @@ class TradeItem(ItemInstance):
         verbose_name=_("Additional ID"),
         help_text=_(
             "A trade item identifier that is in addition to the GTIN."),
-        null=True
+        null=True, blank=True
     )
     additional_id_typecode = models.CharField(
         max_length=250,
         verbose_name=_("Additional ID TypeCode"),
         help_text=_(
             "The code list for this attribute is defined in GS1 GDSN."),
-        null=True
+        null=True, blank=True
     )
     description_short = models.CharField(
         max_length=35,
@@ -448,7 +448,7 @@ class TradeItem(ItemInstance):
         help_text=_("A free form short length description of the trade item "
                     "that can be used to identify the trade item at "
                     "point of sale."),
-        null=True
+        null=True, blank=True
     )
     dosage_form_type = models.CharField(
         max_length=35,
@@ -456,7 +456,7 @@ class TradeItem(ItemInstance):
         help_text=_("A dosage form is the physical form of a medication "
                     "that identifies the form of the pharmaceutical item."
                     " For example: PILL"),
-        null=True
+        null=True, blank=True
     )
     functional_name = models.CharField(
         max_length=100,
@@ -464,14 +464,14 @@ class TradeItem(ItemInstance):
         help_text=_("Describes use of the product or service by the consumer. "
                     "Should help clarify the product classification"
                     " associated with the GTIN."),
-        null=True
+        null=True, blank=True
     )
     manufacturer_name = models.CharField(
         max_length=300,
         verbose_name=_("manufacturer_name"),
         help_text=_("Party name information for the manufacturer of the trade "
                     "item. Example: Acme Corporation"),
-        null=True
+        null=True, blank=True
     )
     net_content_description = models.CharField(
         max_length=500,
@@ -479,7 +479,7 @@ class TradeItem(ItemInstance):
         help_text=_("Free text describing the amount of the trade item "
                     "contained by a package, usually as claimed on the label. "
                     "Example: 253 grams"),
-        null=True
+        null=True, blank=True
     )
     label_description = models.CharField(
         max_length=500,
@@ -487,7 +487,7 @@ class TradeItem(ItemInstance):
         help_text=_("A literal reproduction of the text featured on a "
                     "product's label in the same word-by-word order in which "
                     "it appears on the front of the product's packaging."),
-        null=True
+        null=True, blank=True
     )
     regulated_product_name = models.CharField(
         max_length=500,
@@ -496,32 +496,32 @@ class TradeItem(ItemInstance):
                     "denomination that describes the true nature of the "
                     "product "
                     "according to country specific regulation."),
-        null=True
+        null=True, blank=True
     )
     strength_description = models.CharField(
         max_length=500,
         verbose_name=_("strength_description"),
         help_text=_("Free text describing the strength of the active "
                     "ingredient(s) of the product. Example: 200mg/100mg"),
-        null=True
+        null=True, blank=True
     )
     trade_item_description = models.CharField(
         max_length=200,
         verbose_name=_("Trade Item Description"),
         help_text=_("An understandable and useable description of a trade "
                     "item using brand and other descriptors."),
-        null=True
+        null=True, blank=True
     )
     serial_number_length = models.PositiveSmallIntegerField(
         verbose_name=_("Serial Number Length"),
         help_text=_("The length of this material's serial number field"),
-        null=True
+        null=True, blank=True
     )
     pack_count = models.PositiveIntegerField(
         verbose_name=_("Pack Count"),
         help_text=_("The number of items packed into this package "
                     "(where appropriate)."),
-        null=True
+        null=True, blank=True
     )
     class Meta:
         verbose_name = _('Trade Item')
@@ -562,7 +562,7 @@ class Company(Address, GS1Location):
     )
     company_type = models.ForeignKey(
         'quartet_masterdata.CompanyType',
-        null=True,
+        null=True, blank=True,
         verbose_name=_('Type'),
         help_text=_('Describes the type of company.'),
         on_delete=models.SET_NULL
