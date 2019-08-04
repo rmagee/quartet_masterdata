@@ -91,13 +91,11 @@ class DBProxy:
                 company = Company.objects.get(
                     gs1_company_prefix__startswith=barcode[1:cp_index]
                 )
-                company_prefix_length = len(company.gs1_company_prefix)
-                break
+                return len(company.gs1_company_prefix)
             except (Company.DoesNotExist, Company.MultipleObjectsReturned):
                 if cp_index == 12:
                     self._no_company_error()
                 cp_index = cp_index + 1
-        return company_prefix_length
 
     def _no_company_error(self):
         raise self.CompanyConfigurationError(

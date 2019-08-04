@@ -49,7 +49,7 @@ setup(
     version=version,
     description="""Models and APIs to support material, lot and location master data.""",
     long_description=readme,
-    author='SerialLab, Corp',
+    author='Rob Magee',
     author_email='slab@serial-lab.com',
     url='https://gitlab.com/serial-lab/quartet_masterdata',
     packages=find_packages(),
