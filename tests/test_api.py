@@ -23,9 +23,9 @@ from quartet_masterdata.management.commands.create_masterdata_groups import \
 from quartet_masterdata.db import DBProxy
 from tests import factories
 
+
 class APITests(APITestCase):
     def setUp(self):
-
         comp = factories.CompanyFactory.create()
         location_type = factories.LocationTypeFactory.create()
         location = factories.LocationFactory.create()
@@ -57,6 +57,20 @@ class APITests(APITestCase):
         self.client.force_authenticate(user=user)
         self.user = user
 
+    def test_get_gln_by_sgln(self):
+        dbproxy = DBProxy()
+        self.assertEqual(
+            "2345234523454",
+            dbproxy.get_GLN_by_SGLN('urn:epc:id:sgln:23452.3452345.0')
+        )
+
+    def test_get_sgln_by_gln(self):
+        dbproxy = DBProxy()
+        self.assertEqual(
+            'urn:epc:id:sgln:23452.3452345.0',
+            dbproxy.get_SGLN_by_GLN("2345234523454")
+        )
+
     def test_location_by_id(self):
         url = reverse('location-by-identifier',
                       kwargs={'identifier': 'urn:epc:id:sgln:305555.123456.0'}
@@ -78,7 +92,7 @@ class APITests(APITestCase):
             NDC='2345-67-8901'
         )
         url = reverse('get-company-prefix-length',
-                      kwargs={'barcode':'22345678901234'}
+                      kwargs={'barcode': '22345678901234'}
                       )
         result = self.client.get(url, format='json')
         self.assertEqual(result.status_code, 200)
@@ -106,13 +120,13 @@ class APITests(APITestCase):
     def test_get_company_prefix_length(self):
         factories.CompanyFactory.create(
             name='fake',
-            gs1_company_prefix = '234123789012',
+            gs1_company_prefix='234123789012',
             GLN13='3055551234564',
             SGLN='urn:epc:id:sgln:305555.123456.1'
         )
         company2 = factories.CompanyFactory.create(
             name='fake',
-            gs1_company_prefix = '234124',
+            gs1_company_prefix='234124',
             GLN13='3055551234544',
             SGLN='urn:epc:id:sgln:305555.123456.2'
         )
@@ -134,4 +148,3 @@ class APITests(APITestCase):
             db.get_company_prefix_length('12341234123411'),
             6
         )
-

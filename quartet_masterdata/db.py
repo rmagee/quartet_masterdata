@@ -78,6 +78,46 @@ class DBProxy:
                                       'to invoking this function.')
         return company_prefix_length
 
+    def get_GLN_by_SGLN(self, SGLN: str) -> str:
+        """
+        If you have a SGLN but need a GLN and a Company or Location
+        is configured in the database, pass in the SGLN and the configured
+        GLN will be returned if one is configured.
+        :param SGLN: Inboud SGLN to find the GLN with.
+        :return: A GLN-13 string or None.
+        """
+        ret = None
+        try:
+            company = Company.objects.get(SGLN=SGLN)
+            ret = company.GLN13
+        except Company.DoesNotExist:
+            try:
+                location = Location.objects.get(SGLN=SGLN)
+                ret = location.GLN13
+            except Location.DoesNotExist:
+                pass
+        return ret
+
+    def get_SGLN_by_GLN(self, GLN: str) -> str:
+        """
+        If you have a GLN but need a SGLN and a Company or Location
+        is configured in the database, pass in the GLN and the configured
+        SGLN will be returned if one is configured.
+        :param GLN: Inboud GLN to find the SGLN with.
+        :return: A SGLN string or None.
+        """
+        ret = None
+        try:
+            company = Company.objects.get(GLN13=GLN)
+            ret = company.SGLN
+        except Company.DoesNotExist:
+            try:
+                location = Location.objects.get(GLN13=GLN)
+                ret = location.SGLN
+            except Location.DoesNotExist:
+                pass
+        return ret
+
     def _get_cp_len_by_company(self, barcode):
         """
         Returns the company prefix length by trying to find a company with
@@ -111,10 +151,14 @@ class DBProxy:
         )
 
     class InvalidBarcode(Exception):
+
+        def __init__(self, *args: object) -> None:
+            super().__init__(*args)
+            self.message = args[0]
+
+    class TradeItemConfigurationError(InvalidBarcode):
         pass
 
-    class TradeItemConfigurationError(Exception):
+    class CompanyConfigurationError(InvalidBarcode):
         pass
 
-    class CompanyConfigurationError(Exception):
-        pass
