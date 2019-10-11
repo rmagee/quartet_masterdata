@@ -384,7 +384,13 @@ class ItemInstance(models.Model):
                     "UN/ECE Recommendation 20."),
         null=True, blank=True
     )
-
+    package_uom = models.CharField(
+        max_length=5,
+        verbose_name=_("Package UOM"),
+        help_text=_("The unit of measure for the packaged product, for example"
+                    "CS, Btl, etc.  Expectations will vary by integration."),
+        null=True, blank=True
+    )
     class Meta:
         abstract = True
 
