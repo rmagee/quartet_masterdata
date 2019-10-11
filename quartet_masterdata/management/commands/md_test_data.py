@@ -46,6 +46,7 @@ class LocationFactory(factory.django.DjangoModelFactory):
     location_type = factory.SubFactory(LocationTypeFactory)
 
 
+
 class LocationFieldFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.LocationField
@@ -88,7 +89,7 @@ class CompanyFactory(factory.django.DjangoModelFactory):
     postal_code = '19148'
     latitude = '39.906098'
     longitude = '-75.165733'
-
+    gs1_company_prefix = '305555'
 
 class TradeItemFactory(factory.django.DjangoModelFactory):
     class Meta:

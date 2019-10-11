@@ -56,6 +56,7 @@ class TestQuartet_Masterdata(TestCase):
             Q(tradeitemfield__name='MATNO') &
             Q(tradeitemfield__value='32423-33-333')
         )
+        self.assertEqual(ti.NDC_11_digit, '01234-1234-12')
         self.assertEqual(ti.country_of_origin, 'US')
         self.assertEqual(ti.gross_weight, 10.5)
         self.assertEqual(ti.net_weight, 10)

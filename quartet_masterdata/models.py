@@ -527,6 +527,27 @@ class TradeItem(ItemInstance):
         verbose_name = _('Trade Item')
         verbose_name_plural = _('Trade Items')
 
+    @property
+    def NDC_11_digit(self):
+        """
+        Returns the 10 digit NDC as an 11 digit value using FDA conversion
+        rules.
+        :return:
+        """
+        ret = None
+        if self.NDC:
+            ndc_vals = self.NDC.split('-')
+            if self.NDC_pattern == '4-4-2':
+                ret = '0%s-%s-%s' % (ndc_vals[0],ndc_vals[1],ndc_vals[2])
+            elif self.NDC_pattern == '5-3-2':
+                ret = '%s-0%s-%s' % (ndc_vals[0],ndc_vals[1],ndc_vals[2])
+            elif self.NDC_pattern == '5-4-2':
+                ret = '%s-%s-0%s' % (ndc_vals[0], ndc_vals[1], ndc_vals[2])
+        return ret
+
+    @property
+    def NDC_11_format(self):
+        return '5-4-2'
 
 class TradeItemField(Field):
     '''
