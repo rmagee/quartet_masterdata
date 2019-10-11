@@ -21,3 +21,8 @@ History
 * Fixed management command error (patch 1)
 * Fixed wrong pattern identifier in NDC pattern choices
 * Fixed unique NDC issue in TradeItem model.
+
+1.8
++++
+
+*   Added 11-digit NDC conversion to the Trade Item model.
