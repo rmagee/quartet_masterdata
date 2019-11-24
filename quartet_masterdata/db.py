@@ -147,7 +147,7 @@ class DBProxy:
             'and has a company prefix '
             'field value. Make sure there is a valid Trade Item and/or '
             'Company configured. (Trade Item for GTINs and Company for '
-            'SSCCs.'
+            'SSCCs.)'
         )
 
     class InvalidBarcode(Exception):
