@@ -20,40 +20,40 @@ router = DefaultRouter()
 router.register(
     r'locations',
     viewsets.LocationViewSet,
-    base_name='entries'
+    basename='entries'
 )
 router.register(
     r'location-fields',
     viewsets.LocationFieldViewSet,
-    base_name='location-fields'
+    basename='location-fields'
 )
 router.register(
     r'location-types',
     viewsets.LocationTypeViewSet,
-    base_name='location-types'
+    basename='location-types'
 )
 router.register(
     r'location-identifiers',
     viewsets.LocationIdentifierViewSet,
-    base_name='location-identifiers'
+    basename='location-identifiers'
 )
 router.register(
     r'trade-items',
     viewsets.TradeItemViewSet,
-    base_name='trade-items'
+    basename='trade-items'
 )
 router.register(
     r'companies',
     viewsets.CompanyViewSet,
-    base_name='companies'
+    basename='companies'
 )
 router.register(
     r'company-types',
     viewsets.CompanyTypeViewSet,
-    base_name='company-types'
+    basename='company-types'
 )
 router.register(
     r'trade-item-fields',
     viewsets.TradeItemFieldViewSet,
-    base_name='trade-item-fields'
+    basename='trade-item-fields'
 )
