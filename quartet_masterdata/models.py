@@ -249,7 +249,7 @@ class Location(Address, GS1Location):
     class Meta:
         verbose_name = _('Location')
         verbose_name_plural = _('Locations')
-
+        ordering=['name']
 
 class LocationField(Field):
     '''
@@ -534,6 +534,7 @@ class TradeItem(ItemInstance):
     class Meta:
         verbose_name = _('Trade Item')
         verbose_name_plural = _('Trade Items')
+        ordering=['regulated_product_name']
 
     @property
     def NDC_11_digit(self):
@@ -601,7 +602,7 @@ class Company(Address, GS1Location):
     class Meta:
         verbose_name = _('Company')
         verbose_name_plural = _('Companies')
-
+        ordering=['name']
 
 class OutboundMapping(models.Model):
     company = models.ForeignKey(
