@@ -25,6 +25,7 @@ class LocationFieldInline(admin.StackedInline):
     model = models.LocationField
     extra = 0
 
+
 @admin.register(models.Location)
 class LocationAdmin(admin.ModelAdmin):
     list_display = (
@@ -34,6 +35,16 @@ class LocationAdmin(admin.ModelAdmin):
     inlines = [
         LocationFieldInline
     ]
+
+
+@admin.register(models.OutboundMapping)
+class OutboundMappingAdmin(admin.ModelAdmin):
+    list_display = ('company', 'from_business', 'ship_from',
+                    'to_business', 'ship_to'
+                    )
+    search_fields = ('company__name', 'from_business__name',
+                     'ship_from__name', 'ship_to__name')
+    verbose_name='Outbound Mappings'
 
 
 @admin.register(models.CompanyType)
@@ -70,3 +81,4 @@ def register_to_site(admin_site):
     admin_site.register(models.Company, CompanyAdmin)
     admin_site.register(models.CompanyType, CompanyTypeAdmin)
     admin_site.register(models.TradeItem, TradeItemAdmin)
+    admin_site.register(models.OutboundMapping, OutboundMappingAdmin)

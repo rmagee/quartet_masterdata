@@ -236,9 +236,9 @@ class Location(Address, GS1Location):
         'quartet_masterdata.LocationType',
         verbose_name=_("Location Type"),
         help_text=_("An additional classifier that can be used to identify"
-                       "the location outside of the CBV codes.  This "
-                       "can be an internal classifier or a human readable "
-                       "that lends further clarity to the location record."),
+                    "the location outside of the CBV codes.  This "
+                    "can be an internal classifier or a human readable "
+                    "that lends further clarity to the location record."),
         null=True, blank=True,
         on_delete=models.CASCADE
     )
@@ -391,6 +391,7 @@ class ItemInstance(models.Model):
                     "CS, Btl, etc.  Expectations will vary by integration."),
         null=True, blank=True
     )
+
     class Meta:
         abstract = True
 
@@ -529,6 +530,7 @@ class TradeItem(ItemInstance):
                     "(where appropriate)."),
         null=True, blank=True
     )
+
     class Meta:
         verbose_name = _('Trade Item')
         verbose_name_plural = _('Trade Items')
@@ -544,9 +546,9 @@ class TradeItem(ItemInstance):
         if self.NDC:
             ndc_vals = self.NDC.split('-')
             if self.NDC_pattern == '4-4-2':
-                ret = '0%s-%s-%s' % (ndc_vals[0],ndc_vals[1],ndc_vals[2])
+                ret = '0%s-%s-%s' % (ndc_vals[0], ndc_vals[1], ndc_vals[2])
             elif self.NDC_pattern == '5-3-2':
-                ret = '%s-0%s-%s' % (ndc_vals[0],ndc_vals[1],ndc_vals[2])
+                ret = '%s-0%s-%s' % (ndc_vals[0], ndc_vals[1], ndc_vals[2])
             elif self.NDC_pattern == '5-4-2':
                 ret = '%s-%s-0%s' % (ndc_vals[0], ndc_vals[1], ndc_vals[2])
         return ret
@@ -554,6 +556,7 @@ class TradeItem(ItemInstance):
     @property
     def NDC_11_format(self):
         return '5-4-2'
+
 
 class TradeItemField(Field):
     '''
@@ -599,6 +602,50 @@ class Company(Address, GS1Location):
         verbose_name = _('Company')
         verbose_name_plural = _('Companies')
 
+
+class OutboundMapping(models.Model):
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE,
+        verbose_name=_('Company'),
+        help_text=_('The company to create the trading partner mapping '
+                    'for')
+    )
+    from_business = models.ForeignKey(
+        Company, on_delete=models.CASCADE,
+        verbose_name=_('Default From'),
+        help_text=_('The default from company to use if the company is not '
+                    'used in the mapping.  Leave this blank if the company '
+                    'is always the business owner for outbound master data.'),
+        null=True, blank=True,
+        related_name='company_from'
+    )
+    ship_from = models.ForeignKey(
+        Location, on_delete=models.CASCADE,
+        verbose_name=_('Default Ship From'),
+        help_text=_('The default ship from location for the company.'),
+        null=True, blank=True,
+        related_name='location_from'
+    )
+    to_business = models.ForeignKey(
+        Company, on_delete=models.CASCADE,
+        verbose_name=_('Default To Business'),
+        help_text=_('The default to which product shipments will be mapped if'
+                    ' applicable.'),
+        null=True, blank=True,
+        related_name='company_to'
+    )
+    ship_to = models.ForeignKey(
+        Location, on_delete=models.CASCADE,
+        verbose_name=_('Default Ship To'),
+        help_text=_('The default ship to location for the company.'),
+        null=True, blank=True,
+        related_name='location_to'
+    )
+
+    class Meta:
+        verbose_name=_('Outbound Mapping')
+        verbose_name_plural=_('Outbound Mappings')
+        ordering=['company__name']
 
 class CompanyType(GenericType):
     '''
