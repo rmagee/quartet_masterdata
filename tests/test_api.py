@@ -20,6 +20,7 @@ from django.contrib.auth.models import Group, User
 from quartet_epcis.parsing.parser import QuartetParser
 from quartet_masterdata.management.commands.create_masterdata_groups import \
     Command
+from quartet_masterdata.models import TradeItem
 from quartet_masterdata.db import DBProxy
 from tests import factories
 
@@ -44,6 +45,7 @@ class APITests(APITestCase):
             description='Second Base',
             location=location
         )
+        self.company = comp
         self.setup_user()
 
     def setup_user(self):
@@ -69,6 +71,19 @@ class APITests(APITestCase):
         self.assertEqual(
             'urn:epc:id:sgln:23452.3452345.0',
             dbproxy.get_SGLN_by_GLN("2345234523454")
+        )
+
+    def test_get_trade_item(self):
+        "urn:epc:id:sgtin:077722.0011210.2PWT46W493"
+        TradeItem.objects.create(
+            regulated_product_name='Sleepitoff',
+            package_uom='EA',
+            GTIN14='00777220112102',
+            company=self.company
+        )
+        self.assertIsNotNone(
+            DBProxy().get_trade_item_by_urn("urn:epc:id:sgtin:077722.0011210."
+                                            "2PWT46W493")
         )
 
     def test_location_by_id(self):
