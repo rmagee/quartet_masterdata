@@ -13,7 +13,7 @@
 #
 # Copyright 2019 SerialLab Corp.  All rights reserved.
 from quartet_masterdata.models import Company, Location, TradeItem
-
+from gs123.conversion import URNConverter
 
 class DBProxy:
     """
@@ -149,6 +149,21 @@ class DBProxy:
             'Company configured. (Trade Item for GTINs and Company for '
             'SSCCs.)'
         )
+
+    def get_trade_item_by_urn(self, urn: str):
+        """
+        Will return a TradeItem by converting a sgtin URN to a GTIN-14 and
+        retrieving that trade item from the database.
+        :param urn: The URN to find the trade item for.
+        :return: A TradeItem instance or None
+        """
+        ret = None
+        try:
+            if 'sgtin' in urn:
+                ret = TradeItem.objects.get(GTIN14=URNConverter(urn).gtin14)
+        except TradeItem.DoesNotExist:
+            pass
+        return ret
 
     class InvalidBarcode(Exception):
 
