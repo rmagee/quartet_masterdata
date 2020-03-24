@@ -14,4 +14,5 @@ epcpyyes
 quartet_capture
 quartet_epcis
 quartet_masterdata
+gs123
 
