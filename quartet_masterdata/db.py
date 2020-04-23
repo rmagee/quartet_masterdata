@@ -15,6 +15,7 @@
 from quartet_masterdata.models import Company, Location, TradeItem
 from gs123.conversion import URNConverter
 
+
 class DBProxy:
     """
     Performs common database operations.
@@ -58,12 +59,12 @@ class DBProxy:
             try:
                 trade_item = TradeItem.objects.select_related().get(
                     GTIN14=barcode)
-                if trade_item.NDC:
-                    company_prefix_length = 2 + len(
-                        trade_item.NDC.split('-')[0])
-                else:
+                if trade_item.company:
                     company_prefix_length = len(
                         trade_item.company.gs1_company_prefix)
+                elif trade_item.NDC:
+                    company_prefix_length = 2 + len(
+                        trade_item.NDC.split('-')[0])
             except TradeItem.DoesNotExist:
                 company_prefix_length = self._get_cp_len_by_company(barcode)
         elif len(barcode) == 18:
@@ -176,4 +177,3 @@ class DBProxy:
 
     class CompanyConfigurationError(InvalidBarcode):
         pass
-
