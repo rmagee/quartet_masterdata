@@ -72,6 +72,7 @@ class TradeItemAdmin(admin.ModelAdmin):
         'regulated_product_name'
     )
     ordering = ['GTIN14']
+    search_fields = ['GTIN14', 'regulated_product_name', 'manufacturer_name']
     inlines = [TradeItemFieldInline]
 
 
