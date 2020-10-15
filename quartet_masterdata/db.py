@@ -48,10 +48,10 @@ class DBProxy:
 
     def get_company_prefix_length(self, barcode: str) -> int:
         """
-        Uses the GTIN 14 to look up the company prefix in the trade items
-        table.
-        :param gtin14: The gtin
-        :return: The length of the company prefix record.
+        Uses the GTIN 14 or SSCC 18 to look up the related
+        company prefix in the trade items table.
+        :param barcode: The gtin or sscc to use for the lookup.
+        :return: The length of the company prefix record (int).
         """
 
         company_prefix_length = None
@@ -70,13 +70,9 @@ class DBProxy:
         elif len(barcode) == 18:
             company_prefix_length = self._get_cp_len_by_company(barcode)
         else:
-            raise self.InvalidBarcode('This class will only look up company '
+            raise self.InvalidBarcode('This function will only look up company '
                                       'prefix information based on SSCC and '
-                                      'GTIN 14 barcode strings.  If your '
-                                      'barcode string contains app identifiers '
-                                      'this may be the cause of your exception '
-                                      'please remove app identifiers prior '
-                                      'to invoking this function.')
+                                      'GTIN 14 barcode strings.')
         return company_prefix_length
 
     def get_GLN_by_SGLN(self, SGLN: str) -> str:
@@ -140,7 +136,7 @@ class DBProxy:
 
     def _no_company_error(self):
         raise self.CompanyConfigurationError(
-            'Neither a Company or Trade Item with the company'
+            'Neither a Company or Trade Item with the company '
             'prefix found in the barcode '
             'could not be located in the '
             'database.  Check to make sure '

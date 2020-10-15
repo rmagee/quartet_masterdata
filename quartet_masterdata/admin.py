@@ -30,12 +30,14 @@ class LocationFieldInline(admin.StackedInline):
 class LocationAdmin(admin.ModelAdmin):
     list_display = (
         'name',
-        'company'
+        'company',
+        'GLN13',
+        'SGLN'
     )
     inlines = [
         LocationFieldInline
     ]
-
+    search_fields = ['name', 'GLN13', 'SGLN']
 
 @admin.register(models.OutboundMapping)
 class OutboundMappingAdmin(admin.ModelAdmin):
@@ -54,8 +56,8 @@ class CompanyTypeAdmin(admin.ModelAdmin):
 
 @admin.register(models.Company)
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'gs1_company_prefix')
-
+    list_display = ('name', 'gs1_company_prefix', 'GLN13', 'SGLN')
+    search_fields = ['name', 'GLN13', 'SGLN', 'gs1_company_prefix']
 
 class TradeItemFieldInline(admin.StackedInline):
     model = models.TradeItemField
