@@ -60,7 +60,7 @@ class LocationIdentifierFactory(factory.django.DjangoModelFactory):
     description = 'First Base'
     location = factory.SubFactory(LocationFactory)
 
-class CompanyTypeFactory(factory.DjangoModelFactory):
+class CompanyTypeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.CompanyType
 
