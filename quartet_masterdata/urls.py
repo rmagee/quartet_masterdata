@@ -14,28 +14,27 @@
 #
 # Copyright 2018 SerialLab Corp.  All rights reserved.
 
-from django.conf.urls import url
+from django.urls import re_path
 from django.views.generic import TemplateView
 
 from . import views
 from quartet_masterdata.routers import router
 
 urlpatterns = [
-    url(
-        regex="^location-by-identifier/(?P<identifier>[[\w\s\W]{1,150})/$",
+    re_path(
+        "^location-by-identifier/(?P<identifier>[[\w\s\W]{1,150})/$",
         view=views.LocationByIdentifierView.as_view(),
-        name='location-by-identifier',
+        name="location-by-identifier",
     ),
-    url(
-        regex="^entry-geohistory-by-epc/(?P<epc>[[\w\s\W]{1,150})/$",
+    re_path(
+        "^entry-geohistory-by-epc/(?P<epc>[[\w\s\W]{1,150})/$",
         view=views.EntryGeoHistoryView.as_view(),
-        name='entry-geohistory-by-epc',
+        name="entry-geohistory-by-epc",
     ),
-    url(
-            regex="^get-company-prefix-length/(?P<barcode>[[\w\s\W]{1,18})/$",
-            view=views.GetCompanyPrefixLength.as_view(),
-            name='get-company-prefix-length',
-        )
-
-	]
+    re_path(
+        "^get-company-prefix-length/(?P<barcode>[[\w\s\W]{1,18})/$",
+        view=views.GetCompanyPrefixLength.as_view(),
+        name="get-company-prefix-length",
+    ),
+]
 urlpatterns += router.urls
